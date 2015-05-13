@@ -1,0 +1,511 @@
+\documentclass[journal]{IEEEtran}
+
+% *** GRAPHICS RELATED PACKAGES ***
+%
+\ifCLASSINFOpdf
+  % \usepackage[pdftex]{graphicx}
+  % declare the path(s) where your graphic files are
+  % \graphicspath{{../pdf/}{../jpeg/}}
+  % and their extensions so you won't have to specify these with
+  % every instance of \includegraphics
+  % \DeclareGraphicsExtensions{.pdf,.jpeg,.png}
+\else
+  % or other class option (dvipsone, dvipdf, if not using dvips). graphicx
+  % will default to the driver specified in the system graphics.cfg if no
+  % driver is specified.
+  % \usepackage[dvips]{graphicx}
+  % declare the path(s) where your graphic files are
+  % \graphicspath{{../eps/}}
+  % and their extensions so you won't have to specify these with
+  % every instance of \includegraphics
+  % \DeclareGraphicsExtensions{.eps}
+\fi
+% graphicx was written by David Carlisle and Sebastian Rahtz. It is
+% required if you want graphics, photos, etc. graphicx.sty is already
+% installed on most LaTeX systems. The latest version and documentation
+% can be obtained at: 
+% http://www.ctan.org/tex-archive/macros/latex/required/graphics/
+% Another good source of documentation is "Using Imported Graphics in
+% LaTeX2e" by Keith Reckdahl which can be found at:
+% http://www.ctan.org/tex-archive/info/epslatex/
+%
+% latex, and pdflatex in dvi mode, support graphics in encapsulated
+% postscript (.eps) format. pdflatex in pdf mode supports graphics
+% in .pdf, .jpeg, .png and .mps (metapost) formats. Users should ensure
+% that all non-photo figures use a vector format (.eps, .pdf, .mps) and
+% not a bitmapped formats (.jpeg, .png). IEEE frowns on bitmapped formats
+% which can result in "jaggedy"/blurry rendering of lines and letters as
+% well as large increases in file sizes.
+%
+% You can find documentation about the pdfTeX application at:
+% http://www.tug.org/applications/pdfte
+
+% correct bad hyphenation here
+\hyphenation{op-tical net-works semi-conduc-tor}
+
+\usepackage{graphicx}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{color}
+\usepackage{epsfig}
+\usepackage{tabularx}
+\usepackage{ctable}
+\usepackage{multirow}
+\usepackage{subfigure}
+\usepackage{mathrsfs}
+\usepackage{mathtools}
+\usepackage{hyperref}
+\usepackage{algorithm}
+\usepackage{algpseudocode}
+
+% gray scaled table
+%\newcommand\gray{gray}
+%
+%\newcommand\ColCell[1]{%
+  %\pgfmathparse{#1<.6?1:0}%
+    %\ifnum\pgfmathresult=0\relax\color{white}\fi
+  %\pgfmathparse{1-#1}%
+  %\expandafter\cellcolor\expandafter[%
+    %\expandafter\gray\expandafter]\expandafter{\pgfmathresult}#1}
+%
+%\newcolumntype{E}{>{\collectcell\ColCell}c<{\endcollectcell}}
+
+
+% format argmin
+\DeclareMathOperator*{\argmin}{arg\,min}
+
+% algorithm title
+%\makeatletter
+%\def\BState{\State\hskip-\ALG@thistlm}
+%\makeatother
+
+
+
+
+
+\begin{document}
+%
+% paper title
+% can use linebreaks \\ within to get better formatting as desired
+% Do not put math or special symbols in the title.
+\title{Person-Independent Expression Recognition Using Sparse Expression Residual}
+%
+%
+% author names and IEEE memberships
+% note positions of commas and nonbreaking spaces ( ~ ) LaTeX will not break
+% a structure at a ~ so this keeps an author's name from being broken across
+% two lines.
+% use \thanks{} to gain access to the first footnote area
+% a separate \thanks must be used for each paragraph as LaTeX2e's \thanks
+% was not built to handle multiple paragraphs
+%
+
+\author{XX,~\IEEEmembership{Member,~IEEE,}
+				YY~\IEEEmembership{Member,~IEEE}% <-this % stops a space
+\thanks{\IEEEcompsocthanksitem Acknowledgment: \IEEEcompsocthanksitem 
+
+}}
+
+
+% The paper headers
+\markboth{IEEE Transaction on Multimedia,~Vol.~, No.~, }%
+{Shell \MakeLowercase{\textit{et al.}}: Bare Demo of
+IEEEtran.cls for Computer Society Journals}
+% make the title area
+\maketitle
+
+% As a general rule, do not put math, special symbols or citations
+% in the abstract or keywords.
+\begin{abstract}
+Recognizing facial expressions from videos in a person-independent manner remains a challenging problem. This is due to that (1) the appearance variation is large when rigid head motion is coupled with non-rigid facial muscle motion in uncontrolled expression data; (2) facial expression recognition systems tend to maximize the distance of various expression categories, and thus, a plausible representation should amplify the person-independent facial muscle motion from expression while reducing the person-specific characteristics, such as facial feature geometry. In this paper, we model an expression image sequence as an combination of two parts: (1) a set of low-rank components that are representative of an expression, namely Low-rank Expressions (LRE); (2) a set of sparse appearance residuals that capture the muscle motion of individual frame, namely Sparse Expression Residuals (SER). The person-independent expression characteristic in explicitly modeled in the low-rank recovery framework. We then carry out a comparative study of the recently successful Emotion Avatar Images~\cite{Yang_SMCB12} (EAI) representation and the proposed LRE representation, demonstrating the merits of these representations in person-independent expression recognition. We show that sparse residual can further improve the recognition performance, using both static and dynamic texture feature extractors. Extensive qualitative and quantitative results demonstrate that our algorithm not only establishes informative visual representations but also yields the state-of-the-art recognition performance.
+
+
+\end{abstract}
+
+% Note that keywords are not normally used for peerreview papers.
+\begin{IEEEkeywords}
+person-independent facial expression, low-rank expression, sparse expression residual, Emotion Avatar Image (EAI)
+\end{IEEEkeywords}
+
+
+
+
+
+
+% For peer review papers, you can put extra information on the cover
+% page as needed:
+% \ifCLASSOPTIONpeerreview
+% \begin{center} \bfseries EDICS Category: 3-BBND \end{center}
+% \fi
+%
+% For peerreview papers, this IEEEtran command inserts a page break and
+% creates the second title. It will be ignored for other modes.
+\IEEEpeerreviewmaketitle
+
+
+
+\section{Introduction}
+
+\IEEEPARstart{A}{ffective} computing have been attracting an increasing amount of attentions from the point of view of psychology and computer science~\cite{Picard03}. As a primary channel of conveying emotion, automatic facial expression analysis has been extensively studied~\cite{Pantic_PAMI00}\cite{Torre11}. Although there have been a rich body of research on facial expression recognition in controlled environments~\cite{Torre11}, a recent expression analysis challenge~\cite{FERA11} indicates that person-independent expression recognition remains a difficult problem in uncontrolled settings, due to the following reasons:
+
+\begin{figure}[htbp]
+	\centering
+		\includegraphics[width=.95\columnwidth]{pics/splash.png}
+	\caption{The overview of our approach. A Low-rank component and a sparse residual component are decomposed from a sequence of expression images. Both components are combined for feature extraction and classification.}
+	\label{fig:splash}
+\end{figure}
+
+\begin{enumerate}
+
+\item \textbf{Coupled Motion:} the facial expression appearance in video consists of rigid head motion and non-rigid muscle motion. The rigid head motion consists of in-plane and out-of-plane rotations. Aligning 2D faces by rectifying the out-of-plane rotation is considerably more difficult than in-plane rotation due to the special 3D shape of human face. Most approaches in the literature~\cite{Bartlett_FG11}\cite{Valstar_FERA11} only recover the in-plane rotation by computing an affine transformation based on facial feature correspondences. Further, segmenting the non-rigid muscle motion, which reveals the true facial expression, from the rigid head motion is an inherently challenging problem due to the 2D imaging procedure.
+
+\item \textbf{Person-specific Appearance:} in a facial expression recognition task, the goal is to discover robust features to discriminate various expressions. In a typical facial expression recognition system~\cite{Bartlett_FG11}\cite{Valstar_SMCB12}, facial texture features, such as Local Binary Pattern (LBP), Local Phase Quantization (LPQ), or Gabor filter response, are normally extracted from an aligned face. However, their face affine-based registration procedure retains the person-specific information such as facial feature geometry. The person-specific information can yields an over-fitted model that ultimately degrades the recognition accuracy. An ``ideal'' expression recognition system is expected to eliminate person-specific information entirely, distilling the person-independent motion purely from expression. There has been some work~\cite{Yang_SMCB12}\cite{Dahmane_TMM14} attempting to diminish the person-specific effect, yielding plausible performance. 
+
+\end{enumerate}
+
+Concretely, the problem this paper intend to tackle is as follows: given a video sequence of a facial expression (after temporal segmentation), the goal is to classify the entire video to one of the categorical expression, such as \textit{Happiness}, \textit{Anger}, etc. 
+
+From a video processing point of view, the approaches can be categories to three strategies for expression recognition in video: First, A wide range of methods~\cite{Bartlett_FG11,Valstar_SMCB12} process each frame individually. They extract features from each frame and carry out majority voting for the entire sequence. Second, temporal features are used to capture the muscle dynamics of facial expressions~\cite{Zhao_PAMI07}\cite{Huang11}. These approaches typically requires accurate alignment results in order to generate meaningful dynamic features. Third, an entire video is summarized into an image-based representation that captures the expression appearance~\cite{Yang_SMCB12}. This approach completely abandons the dynamic information, which could in turn carry some essential information for recognition. In essence, the aforementioned strategies summarize the video-based expression data at different resolutions. 
+
+In this paper, we depart from all the previous strategies and approach the summarization problem at a different resolution. %We first to align each frame to a canonical reference representation using SIFT flow~\cite{Liu_PAMI11}. This endeavor not only rectifies in-plane and minor out-plane head rotation, but also reduces the person-specific information. 
+We treat a sequence of facial expression frames as a set of correlated datum. Each frame is modeled as (1) a low-rank structure that represents the expression appearance jointly estimated from the entire sequence, and (2) an additive sparse residual that captures muscle dynamics which deviates from the low-rank structure. As shown in Fig.~\ref{fig:splash}, both Low-rank Expression (LRE) and Sparse Expression Residual (SER) representations are used as dual modalities for expression recognition. 
+
+Sparse modeling has been a hot topic for the past few year. In the facial expression related domain,~\cite{Lin12} jointly recovers a dictionary and a set of sparse coefficients to efficiently synthesize 3-D facial expressions.~\cite{Tariq12} learns the mid-level features by sparse coding technique for multi-view expression recognition. It uses sparse codes of local descriptors (such as SIFT) to build features for expression recognition. In contrast, we focus on recovering 2D representations that are low-rank, while the extracted some common texture feature, such as LBP~\cite{Ojala_PAMI02}. \cite{Peng_CVPR10} proposes a batch image alignment method by sparse and low-rank decomposition. It models the image transformation as in-plane (similarity, affine, etc.) transformations, and therefore, leads to a coupled loop of optimization procedure. 
+
+In this work, we explicitly model the person-independent facial expression appearance in a sparse low-rank framework. The person-independent factor is modeled as a non-linear transformation function, which can be approximated by matching a target face to a canonical reference face in a structural sense. Concretely, we approximate this non-linear by the correspondence of two SIFT feature descriptors, namely SIFT-flow~\cite{Liu_PAMI11}. We then show that the independence of the transformation with respect to the low-rank recovery procedure, leading to a efficient algorithm in the pursuit of the sparse low-rank facial expression appearances. 
+
+The contributions of this work are 
+\begin{enumerate}
+\item We model person-independent facial expressions in video in a generic sparse low-rank framework. The person-independent factor is modeled as an non-linear transformation, which decompose an expression video into two representations, which we termed Low-rank Expression (LRE) and Sparse Expression Residual (SER).
+
+\item We show that a special case of person-independent transformation, via SIFT-flow, results in a low-rank expression model, which visually resembles the successful Emotion Avatar Image (EAI) representations~\cite{Yang_SMCB12} for superior recognition performance for unseen data.
+
+\item We demonstrate the non-rigid muscle motion captured by the sparse residual component, SER, can further improve the recognition performance. Both quantitative and qualitative evaluations are carried out to justify the improvement. 
+
+\end{enumerate}
+
+In what follows, Section~\ref{decompose} explains the modeling the expression images as a Low-rank Expression (LRE) and a Sparse Expression Residual (SER). Subsequently, in Section~\ref{eai}, we discuss the relationship of LER to the Emotion Avatar Images (EAI) by both theory and visual representations. Section~\ref{exp} demonstrates the effectiveness of LRE+SER modeling via extensive experimental results. Finally, Section~\ref{conclude} concludes the paper.
+
+
+\section{Person-independent Expression Modeling\label{decompose}}
+
+\subsection{The Generalized Model} 
+We assume that a video is temporally segmented such that it can be described by one labeled category, \textit{e.g.}, prototype expressions (happy or sadness) or Action Units. We then seek to decompose the expression video to two representations: (1) a low-rank facial expression structure represents the global appearance of the sequence; (2) a sparse component that characterizes the non-rigid muscle motion for each frame. Formally, given a sequence of faces, we denote $I_1, \ldots, I_n$ as $n$ observations of a sequence, then
+
+\begin{equation}
+I_i = I^{0}_i + e_i,\quad i = 1\cdots n
+\end{equation}
+
+\noindent where sparse residual is modeled by an additive term $e_i$, $I^{0}_i$ is the low-rank component of frame $i$. Further, we denote $v\in\mathscr{R}^{m\times 1}$ to be the vectorized observation $I$. Stacking multiple such vectors results in an observation matrix
+
+\begin{equation}
+D = [v_1 | \cdots | v_n] = A + E
+\end{equation}
+
+\noindent where $D\in\mathscr{R}^{m\times n}$; $A = [v^{0}_{1} | \cdots | v^{0}_{n}]$ is a low-rank matrix that models the representative structure by an expression sequence; $E = [e_{1} | \cdots | e_{n}]$ is a sparse matrix with large magnitude deviations that models the non-rigid muscle motion. Thus, the problem that we try to solve is
+
+\begin{equation} \label{eq:org}
+\argmin_{A,E} rank(A)+\gamma \|E\|_0  \quad s.t. \quad \phi (D) = A + E 
+\end{equation}
+
+\noindent where $\|\cdot\|_0$ is the $L_0$ norm which represents the number of non-zero entries in the error term $E$. $\gamma$ is the scaling parameter which controls a weight preference of the rank of $A$ and sparsity of $E$. $\phi (D)$ is a non-linear function that transforms each face ($I_i$) in $D$ to the canonical space. Here, we explicitly model the person-independent appearance through a non-linear mapping to a reference, in hope to recover the muscle motion that directly related to facial expression. Although Eq.~\ref{eq:org} is an intuitive formulation, it is intractable in practice due to the non-convexity and discontinuity of rank computation and $L_0$ norm, and the highly non-linearity of the equality constraint. We will show how we instantiate the non-linear function to a structural-matching flow field and solve this problem efficiently.
+
+\subsection{Reference-based Non-linear Mapping} 
+As suggested by many work in sparse low-rank recovery~\cite{Candes11,Lin09,Peng_CVPR10}, this problem can be relaxed by its convex surrogate
+
+\begin{equation} \label{eq:rpca}
+\argmin_{A,E} \|A\|_*+\gamma \|E\|_1  \quad s.t. \quad \phi (D) = A + E 
+\end{equation}
+
+\noindent where $\|\cdot\|_*$ is the nuclear norm that captures the sum of all singular values of $A$, i.e., $\|A\|_*=\sum^m_{i=1}\sigma_i(A)$; $\|E\|_1=\sum_{ij}|E_{ij}|$ is the $L_1$ norm of $E$. This new objective is now continuous and convex. The remaining challenge is the non-linear mapping, $\phi (D)$, in the equality constraint. 
+
+Since a face in each frame, $I_i$, contains pose and identity variations, we intend to carry out the expression recognition task in a canonical space. Specifically, we model the person-independent factor by mapping each frame to a reference face model, $I_r$. This strategy has been demonstrated effective in expression recognition particularly in predicting expressions from unseen subjects~\cite{Yang_SMCB12,Dahmane_TMM14}. One instantiation of the non-linear mapping, which we opt to use in this work, is the structural matching technique, namely, SIFT-flow. 
+
+SIFT flow~\cite{Liu_PAMI11} was originally designed to align an image to its plausible nearest neighbor which can have large variations. It robustly matches dense structural SIFT features between two images, while maintaining spatial discontinuities. The SIFT~\cite{Lowe_ICCV99} feature is first extracted in a pixel-wise fashion. For every pixel in an image, the neighborhood (e.g., $16\times16$) is divided into a $4\times4$ cell array. The orientation of each cell is quantized into 8 bins, generating a $4\times4\times8=128$-dimension vector as the SIFT representation for a pixel, or the so called SIFT image.
+
+Subsequently, a dense correspondence is established to match the two SIFT images. Similar to optical flow, the objective energy function is designed as:
+\begin{align}
+	\label{data_term}
+	E(\textbf{w})=&\sum_\textbf{p} min(\left\|s_1 (\textbf{p})-s_2 (\textbf{p}+\textbf{w}(\textbf{p}))\right\|_1 ,t)+
+\\\label{small_constraint}
+&\sum_\textbf{p} \eta(\left|u(\textbf{p})\right|+\left|v(\textbf{p})\right|) +
+\\\nonumber
+&\sum_{(\textbf{p},\textbf{q})\in\varepsilon} min(\alpha\left|u(\textbf{p})-u(\textbf{q})\right|,d)+
+\\\label{smooth_constraint}
+&~~~min(\alpha\left|v(\textbf{p})-v(\textbf{q})\right|,d)
+\end{align}
+
+\noindent where $\textbf{p}=(x,y)$ is the grid coordinates of the images, and $\textbf{w}(\textbf{p})=(u(\textbf{p}),v(\textbf{p}))$ is the flow vector at $\textbf{p}$. $u(\textbf{p}),v(\textbf{p})$ are the flow vectors for $x$ direction and $y$ direction respectively. $s_1$ and $s_2$ are two SIFT images to be matched. $\varepsilon$ contains all the spatial neighbors (a four-neighbor system is used). The \emph{data term} in (\ref{data_term}) is a SIFT descriptor match constraint that enforces the match along the flow vector $\textbf{w}(\textbf{p})$. The \emph{small displacement constraint} in (\ref{small_constraint}) allows the flow vector to be as small as possible when no other information is available. The \emph{smoothness constraint} in (\ref{smooth_constraint}) takes care of the similarity of flow vectors for adjacent pixels. In this objective function, the truncated $L1$ norm is used in both the data term and the smoothness term with $t$ and $d$ as the thresholds for matching outliers and flow discontinuities, respectively. $\eta$ and $\alpha$ are weight parameters for the small displacement and smoothness constraint, respectively. The dual-layer loopy belief propagation is used in additional to the coarse-to-fine flow matching scheme to optimize the objective function efficiently.
+
+\begin{figure}[htbp]
+	\centering
+		\includegraphics[width=\columnwidth]{pics/sift_flow_visual.png}
+	\caption{Reference-based alignment via SIFT flow~\cite{Liu_PAMI11} warping. The Avatar Reference is a canonical representation following the work in~\cite{Yang_SMCB12}. The head rotation is corrected and person-specific information is attenuated in both sequence.}
+	\label{fig:sift_flow_visual}
+\end{figure}
+
+
+Fig.~\ref{fig:sift_flow_visual} shows SIFT flow warping of faces with respect to AR. Faces in each frame is extracted from Viola-Jones face detector~\cite{Viola_IJCV04}. The reference face images is chosen to be the level-1 Avatar Reference (AR) image~\cite{Yang_SMCB12} generated from the FERA-GEMEP dataset~\cite{Valstar_FERA11}. AR is essentially a face model reflects the expression and identity of the entire population in the dataset. It is computed by an iteratively algorithm that estimates the reference model and the individual expression model simultaneously. It is computed offline and has been demonstrated to perform well across datasets~\cite{Yang_SMCB12}. 
+
+Since we transform each frame to the same reference model, facial features for the entire sequence are coarsely aligned. It is also observed from Fig.~\ref{fig:sift_flow_visual} that person identity information is attenuated as the appearance of both sequence resemble the AR after warping. In addition, head rotation (especially out-of-plane rotation) is corrected via this non-linear transformation. 
+
+
+Thus, we write $f_s^i$ (shorthanded for $f_s(I_i,I_r)$) is the SIFT flow field given by matching $I_i$ to $I_r$. Stacking multiple flow vectors in the entire sequence results in $S = [f_s^1 | \cdots | f_s^n]$. Thus our optimization problem can be write as
+
+\begin{equation} \label{eq:rpca}
+\argmin_{A,E} \|A\|_*+\gamma \|E\|_1  \quad s.t. \quad D^* = A + E 
+\end{equation}
+
+where $D^*=D+S$. Now, with this linear constraint, our problem can be solved by an efficient Accelerated Proximal Gradient (APG) algorithm~\cite{Beck09}\cite{Toh09}\cite{Lin09}. The APG relaxes Eq.~\ref{eq:rpca} to
+
+\begin{equation} \label{eq:apg}
+\argmin_{A,E} \|A\|_* + \gamma \|E\|_1 + \frac{1}{\mu}f(A,E)
+\end{equation}
+
+\noindent where $f(A,E)=\frac{1}{2}\|D^*-A-E\|^2_F$ penalizes the objective function based on the equality constraint; $\|\cdot\|_F$ is the Frobenius norm; $\mu>0$ is a relaxation parameter such that any solution to Eq.~\ref{eq:apg} approaches the solution set of Eq.~\ref{eq:rpca} when $\mu$ approaches 0. The AGP algorithm then iteratively form separable quadratic approximation to $f(A,E)$ at a special sequence of points $Y^k=(Y^k_A,Y^k_E)$ for fast convergence~\cite{Beck09}. Hence, $(A^{k+1},E^{k+1})$ at next iteration is obtained by
+
+\begin{equation} \label{eq:apg_fast}
+\argmin_{A,E} \|A\|_* + \gamma \|E\|_1 + \frac{\rho}{2\mu}\|(A,E)-(G^k_A,G^k_E)\|^2_F
+\end{equation}
+
+\noindent where $(G^k_A,G^k_E)=Y^k-\rho^{-1}\nabla f|_{Y^k}$; $\rho$ is set based on the \textit{Lipschitz} constant. $A^{k+1}$ and $E^{k+1}$ are computed by soft-thresholding the singular values of $G^k_A$ and the entries of $G^k_E$, respectively, where the soft-thresholding function is defined as
+
+\begin{equation}
+\mathscr{T}_\xi(x)=
+	\begin{dcases}
+    sign(x)(|x|-\xi),  	& |x|>\xi \\
+    0,  								& |x|>\xi
+	\end{dcases}
+\end{equation}
+
+The comprehensive procedure is summarized in Algorithm~\ref{alg}. Parameters are empirically chosen based on the analysis in~\cite{Lin09}, i.e., $\delta\leq10^{-5}$, $\eta=0.9$, $\mu_0=0.99\|D\|_2$, where $\|\cdot\|_2$ is the spectral norm. We refer interested readers to~\cite{Lin09} for more details on parameter setup. 
+
+\begin{algorithm}[htb]
+    \caption{Expression Decomposition via Convex Programming}
+    \textbf{Input:} Expression data matrix $D\in \mathscr{R}^{m\times n}$, SIFT-flow warping matrix $S\in \mathscr{R}^{m\times n}$, $\lambda$ \\
+    \begin{algorithmic}[1]
+			\State{$D^*=D+S$}
+			\State{$A_0,A_{-1}\leftarrow 0; E_0,E_{-1}\leftarrow 0; t_0,t_{-1}\leftarrow 1; \bar{\mu}\leftarrow \delta\mu_0$.}
+			\While{not converged}
+				\State{\textbf{step 1:} compute proximal points:}
+				\State{ $Y^k_A\leftarrow A^k+\frac{t_{k-1}-1}{t_k}(A_k-A_{k-1})$;}
+				\State{ $Y^k_E\leftarrow E^k+\frac{t_{k-1}-1}{t_k}(E_k-E_{k-1})$;}
+				
+				\State{\textbf{step 2:} compute gradient:}
+				\State{ $G^k_A\leftarrow Y^k_A-\frac{1}{2}(Y^k_A+Y^k_E-D^*)$;}
+				\State{ $G^k_E\leftarrow Y^k_E-\frac{1}{2}(Y^k_A+Y^k_E-D^*)$;}
+				
+				\State{\textbf{step 3:} soft-thresholding:}
+				\State{ $(U,S,V)\leftarrow $SVD$(G^k_A)$}
+				\State{ $A_{k+1}\leftarrow U\mathscr{T}_{\mu^k/\rho}(S)V^T$;}
+				\State{ $E_{k+1}\leftarrow \mathscr{T}_{\lambda\mu^k/\rho}(G^k_E)$;}
+				
+				\State{\textbf{step 4:} update:}
+				\State{ $t_{k+1}\leftarrow \frac{1+\sqrt{4t^2_k+1}}{2}$;}
+				\State{ $\mu_{k+1}\leftarrow max(\eta\mu_k,\bar{\mu})$;}
+				\State{ $k\leftarrow k+1$;}
+			\EndWhile
+    \end{algorithmic}
+    \textbf{Output:} $A\leftarrow A_k$, $E\leftarrow E_k$. \\
+    \label{alg}
+\end{algorithm}
+
+\begin{figure}[htbp]
+	\centering
+		\includegraphics[width=\columnwidth]{pics/low_rank_sparse}
+	\caption{The decomposition of Low-rank Expression and Sparse Expression Residual. A Low-rank component and a sparse residual component are decomposed from a sequence of aligned expression images. Both components are combined for feature extraction and classification. The Emotion Avatar Image (EAI) representation is also shown for comparison.}
+	\label{fig:low_rank_sparse}
+\end{figure}
+
+
+\subsection{Emotion Avatar Image (EAI) Revisited\label{sec:eai}}
+
+EAI was proposed in~\cite{Yang_SMCB12} for the international competition on FERA Challenge~\cite{FERA11}. It is a robust image representation that summarizes facial expression videos and generalizes well for person-independent expression recognition. The EAIs are iteratively generated along with the Avatar Reference (AR) representation, which is canonical representation that captures the appearance of the entire dataset. The generalization of AR is also demonstrated in~\cite{Yang_SMCB12} such that the recognition performance is not degraded when AR is computed using contemporary datasets. As shown from row 1 of Fig.~\ref{fig:low_rank_sparse}, the EAI is computed from the mean of the aligned faces with respect to a certain level of AR (Level-1 in this case). It can be considered as a Maximum Likelihood estimate of the aligned sequences. 
+
+On the other hand, the low-rank component and sparse residual of individual frame is recovered by Algorithm~\ref{alg}. As seen from row 2 of Fig.~\ref{fig:low_rank_sparse}, the low-rank components are jointly estimated from all frames of an sequence. Although individual frame appears to be different of each frame and its corresponding low-rank component, the maximum likelihood estimates of aligned faces (EAI) and their low-rank component (LRE) resemble each other visually (last column of Fig.~\ref{fig:low_rank_sparse}). More sample visualizations are shown in Fig.~\ref{fig:eai_lre_compare} for various sequence. 
+
+
+\begin{figure}[htbp]
+	\centering
+		\includegraphics[width=\columnwidth]{pics/eai_lre_compare.png}
+	\caption{The comparison of Low-rank Expressions (LRE) and Emotion Avatar Images (EAI). Although generated from different approaches, their appearances resemble each other at pixel level.}
+	\label{fig:eai_lre_compare}
+\end{figure}
+
+As mentioned earlier, the expression appearance captured by the LRE reveals the underlining expression. For example, the expression \textit{Happiness} can be inferred from the LRE in Fig.~\ref{fig:low_rank_sparse} based on its lip corner expansion and cheek raise. However, LRE discards the expression dynamics of every individual. Fortunately, the sparse residual recovers the deviation of an aligned face from a low-rank expression frame. Sparse residual models the subtle muscle motion of each particular frame from the underlining expression. 
+
+\begin{figure*}[htbp]
+\centering{
+        \subfigure[The Low-rank Expression (LRE) representations]{\includegraphics[width=0.45\linewidth]{pics/lre_vs_id.png}\label{fig:lre_vs_id}}
+        \subfigure[The Sparse Residual Expression (SRE) representations]{\includegraphics[width=0.45\linewidth]{pics/ser_vs_id.png}\label{fig:ser_vs_id}}
+}
+\caption{\label{fig:rep_vs_id} The sparse decomposition of facial expression sequence. Each grid is a image representation of a video sequence. Fig.~\ref{fig:lre_vs_id} shows the LRE representation and the corresponding grid in Fig.~\ref{fig:ser_vs_id} illustrates the SRE representation of the same expression sequence.}
+\end{figure*}
+
+\section{Experimental Results\label{exp}}
+
+We test our algorithm on the \textit{uncontrolled} dataset, FERA-GEMEP~\cite{FERA_data}. Qualitative results are shown first to visually demonstrate the validity of our model. The quantitative results are then provided such that our method not only outperform the state-of-the-art approaches, but also has the potential of improvement given more data. We also provided results on the \textit{controlled} dataset, CK+~\cite{CKplus} for completeness of the experiment.
+
+
+\subsection{Uncontrolled Data: FERA-GEMEP Dataset}
+
+The FERA-GEMEP~\cite{FERA_data} is an uncontrolled facial expression dataset, i.e., in the process of data collection, subjects are asked to convey one of the following five emotions at a time: \textit{Anger}, \textit{Fear}, \textit{Joy}, \textit{Relief}, \textit{Sadness}, without any control of their head or body movement. Each video segment contains one subject displaying expressions that corresponds to one emotion. The average video length is about 2 seconds with 30 fps frame rate. Most subjects are uttering some meaningless phrases while displaying expressions, and there are 3 to 5 videos for each subject with the same emotion. All experiments in this paper are designed to be person-independent (i.e. no test subject is in the training data), the performance of which is of the most interest because it shows the generalization ability of the algorithm. 
+
+
+The FERA challenge consists of a training and a test set. There are 7 subjects (3 males and 4 females) in the training set, and 6 subjects (3 males and 4 females) in the test set, 3 of which appears in training. The facial expression videos of both sets are provided, while only the ground truth label for the training set is available. Fig.~\ref{fig:rep_vs_id} provides a visualization of decomposed representation, namely LRE and SRE, of sample expression video of various subjects for all emotion categories in the FERA training set. The participants can use other publicly available data in addition to FERA training set for training. The predictions on the test set are submitted to the FERA organizer for an independent evaluation. Table~\ref{table:fera_team} shows the challenge participants\footnote{\label{teams}Teams are ranked based on the FERA Challenge person-independent test. \textbf{UCR}: University of California at Riverside; \textbf{UCSD-CERT}: University of California at San Diego; \textbf{UIUC-UMC}: University of Illinois at Urbana-Champaign; University of Missouri; \textbf{KIT}: Karlsruhe Institute of Technology; \textbf{ANU}: Australian National University; \textbf{NUS}: National University of Singapore; \textbf{QUT-CMU}: Queensland University of Technology; Carnegie Mellon University; \textbf{UCL}: University College London; \textbf{UMont.}: University of Montreal;  \textbf{MIT-Cambridge}: Massachusetts Institute of Technology; University of Cambridge.} and the corresponding person-independent test results. 
+
+Since the emotion ground truth label is only available for the FERA training set, we evaluate our algorithm using this set. We carried out leave-one-subject-out cross validation using LRE and SRE individually as well as their combination and the results are shown Table~\ref{table:comp}. In comparison, we report the approach from~\cite{Yang_SMCB12} for the following two reasons: (1)~\cite{Yang_SMCB12} has the best performance in FERA challenge; (2) unlike most of the other methods which uses additional training data,~\cite{Yang_SMCB12} solely uses the FERA training set. After the image representations (i.e., LRE and SER) are established, we follow the same feature extraction schema as~\cite{Valstar12}\cite{Yang_SMCB12} for better comparison. The image representations are first resized to $200\times200$ pixels, and then divided into blocks of size $20\times20$. Various texture feature descriptors such as LBP, LPQ, Gabor filters are used for feature extraction at each block. The features extracted on LRE and SER representations are then fused by concatenation. Subsequently, a linear SVM~\cite{libsvm} is used similar to~\cite{Valstar12}\cite{Yang_SMCB12}. Table~\ref{table:comp} shows the person-independent experimental results comparison. 
+
+In this paper, we also test how facial dynamics effect the recognition performance. Since each frame of a sequence is decomposed into a low-rank and a sparse component, we compute temporal LBP and LPQ features in Three Orthogonal Planes (TOP), termed, LBP-TOP~\cite{Zhao_PAMI07} and LPQ-TOP~\cite{LPQ-TOP}. 
+
+
+As seen from Table~\ref{table:comp}, the performance using EAI representation~\cite{Yang_SMCB12} is on par with the LRE representation. This quantitative result is congruent with our qualitative analysis in Section~\ref{sec:eai} that EAI and LRE has very similar appearance. The combination of LRE and SRE consistently outperforms other approaches, and the gain over LRE is around $10\%$ with the extra information captured in SRE. The LPQ texture description has a slightly better performance over the LBP and Gabor features. The confusion matrix for the best performance setting, i.e., LRE+SER with LPQ, is provided in Table.~\ref{table:mat_fera}. If mentioned otherwise, the following analysis are using the best performing LPQ feature. 
+
+\begin{table}
+\caption{The rank of person-independent test in FERA Challenge\label{table:fera_team}}
+\centering
+\begin{tabular}{|c|c|}
+\hline
+	Team~\ref{teams} & Accuracy \\ \hline
+	UCR 								& 0.75 \\ 
+	UCSD-CERT						& 0.71 \\ 
+	UIUC-UMC						& 0.66 \\ 
+	KIT									& 0.66 \\ 
+	ANU									& 0.65 \\ 
+	NUS									& 0.64 \\ 
+	QUT-CMU							& 0.62 \\ 
+	UCL									& 0.61 \\ 
+	UMont								& 0.58 \\ 
+	MIT-Cambridge				& 0.45 \\ 
+	Baseline						& 0.44 \\
+\hline
+\end{tabular}
+\end{table}
+
+\begin{table}[htbp]
+\caption{The accuracy comparison of our approach to the best performance system in the FERA Challenge\label{table:comp}}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|c|}
+\hline
+	Approach 									& TOP-LPQ	& TOP-LBP 	& LPQ 	& LBP 	& Gabor \\ \hline
+	LRE+SER										& \textbf{0.78} 		& 0.72 	& 0.76 	&	0.73	& 0.68	\\
+	UCR	\cite{Yang_SMCB12}		& 0.70 		& 0.67 	& \textbf{0.71} 	& 0.68	& 0.66	\\ 
+	LRE												& \textbf{0.72} 		& 0.66 	& 0.70 	& 0.68	& 0.66	\\
+	SER												& \textbf{0.65} 		& 0.65 	& 0.62 	& 0.60	& 0.55	\\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+\begin{table}[htbp]
+\caption{confusion matrix for the FERA training dataset using LER+SER.
+(An=Anger, Fe=Fear, Jo=Joy, Re=Relief, Sa=Sadness)}
+\begin{center}
+\label{table:mat_fera}
+\begin{tabular}{c|c|ccccc}
+
+&\multicolumn{6}{c}{True Label} \\ \hline
+\multirow{6}{*}{\begin{sideways}Prediction\end{sideways}} && An & Fe & Jo & Re & Sa \\ \cline{2-7}
+&An				&\textbf{62.1} &13.2  &4.8  &3.6  &   \\ \cline{2-2}
+&Co       &16.4  &\textbf{71.4}  &3.2   &1.8   & \\ \cline{2-2}
+&Di       &7.5  &5.5   &\textbf{85.5} &3.6  &    \\ \cline{2-2}
+&Fe       &5.8   &1.8   &4.8   &\textbf{78.4} &8.6    \\ \cline{2-2}
+&Ha       &8.2   &8.1   &1.6  &12.5 &\textbf{91.4}  \\ \cline{2-2}\hline
+\multicolumn{2}{c|}{Average rate} &\multicolumn{5}{c}{\textbf{77.8}} \\
+
+\end{tabular}
+\end{center}
+\end{table}
+
+Notice that the performance of the EAI approach (i.e., $0.71$ shown in Table~\ref{table:comp} is inferior than that in the FERA challenge~\cite{Yang_SMCB12} (i.e., $0.75$ shown in Table~\ref{table:fera_team}). We believe that this is due to a smaller training size from our person-independent experiment setting. For validate our claim, we carried out a leave-one-subject-out cross validation with respect to different training sizes for various representations. For a specific size, we randomly select the training data to train a classifier. This experiment is repeated for 10 times at each training size, and the average classification rate is reported in Fig.~\ref{fig:effect_training_size}. As seen in Fig.~\ref{fig:effect_training_size}, the classification rate steadily raises as the training size increases in all three cases. This informs us that given more training data for same training subject pool, the algorithm has the potential for superior performance. Additionally, it is observed that the increase rate for LRE is boosted by SER, especially when training size is larger. This demonstrates that the SER indeed captures discriminative facial muscle motion for expression recognition. In the meantime, the performance of LRE+SER is not saturated as the training size reaches the maximum (130 in this experiment), suggesting a potential for better performance given more data.
+
+
+\begin{figure}[htbp]
+	\centering
+		\includegraphics[width=.7\columnwidth]{pics/effect_training_size.png}
+	\caption{The person-independent recognition accuracy trend with various training size. The performance of LRE is spurred by the additional information captured in SER, and it has the potential for superior performance as the number of training increases. }
+	\label{fig:effect_training_size}
+\end{figure}
+
+
+Under a person-independent setting, it is also interesting to discover the impact of the number of subjects in training. Thus, for each leave-one-subject-out test using LRE+SER, we vary the number of subjects in training, $k$, from 1 to 6 (since there are 7 subjects in the dataset), and conduct the test for ${6 \choose k}$ times. For example, when 2 subjects are in the training, there can be ${6 \choose 2}=15$ possible combinations of subjects, we record the test results for all combinations. As illustrated in Fig.~\ref{fig:effect_people_num}, a boxplot shows an increasing trend for classification accuracy as the number of subjects in training increases. This shows that the performance is likely to be improved as the number of training subjects enlarges. Additionally, Fig.~\ref{fig:effect_people_num} also shows a decreasing trend of the classification accuracy variance, suggesting that the performance becomes more stable as the number of training subjects increases. 
+
+
+\begin{figure}[htbp]
+	\centering
+		\includegraphics[width=.65\columnwidth]{pics/effect_people_num.png}
+	\caption{The boxplot of person-independent recognition accuracy using LRE+SER with various number of people in the training set. The performance at the second quartile are connected to illustrate the trend. The performance increases and becomes more stable when the number of training subjects enlarges.}
+	\label{fig:effect_people_num}
+\end{figure}
+
+
+
+\subsection{Controlled Data: CK+ dataset}
+
+The Extended Cohn-Kanade dataset (CK+)~\cite{CKplus} is a facial expression dataset that has 7 categories of expressions, namely, \textit{Anger}, \textit{Contempt}, \textit{Disgust}, \textit{Fear}, \textit{Happy}, \textit{Sadness}, and \textit{Surprise}. This is a controlled dataset since the subjects controlled their head pose on purpose, and the expression displayed always follows the ``neutral-onset-apex" pattern. These conscious control may not only hide the true muscle contraction of an expression, but also changes the expression dynamics~\cite{Bartlett03}\cite{Ekman2005}. Although the philosophy of our algorithm is not designed for this fully controlled data, for the sake of completeness of a study, we also carry out person-independent tests and evaluate our LRE+SER representation together with LPQ feature descriptor on 316 sequences from 123 subjects in this dataset.
+
+\begin{table}[htbp]
+\caption{confusion matrix for CK+ dataset using LER+SER.
+(An=Anger, Co=Contempt, Di=Disgust, Fe=Fear, Ha=Happy, Sa=Sadness, Su=Surprise)}
+\begin{center}
+\label{table:CK_result}
+\begin{tabular}{c|c|ccccccc}
+
+&\multicolumn{8}{c}{True Label} \\ \hline
+\multirow{8}{*}{\begin{sideways}Prediction\end{sideways}} && An & Co & Di & Fe & Ha & Sa & Su \\ \cline{2-9}
+&An          &\textbf{75} &22.2  &1.8  &8  &  &25.9 &  \\ \cline{2-2}
+&Co       &2.3  &\textbf{72.2}  &   &   &  &3.7  &1.2 \\ \cline{2-2}
+&Di        &4.5  &   &\textbf{94.6} &  &1.6 &3.7 &2.4  \\ \cline{2-2}
+&Fe           &2.3   &   &   &\textbf{68} &  &3.7  &1.2  \\ \cline{2-2}
+&Ha          &4.5   &   &1.8  &8 &\textbf{96.8} &  &  \\ \cline{2-2}
+&Sa        &9.1  &  &  &4   &  &\textbf{48.1} & \\ \cline{2-2}
+&Su       &2.3  &5.6 &1.8  &12 &1.6  &14.8 &\textbf{95.2} \\ \hline
+\multicolumn{2}{c|}{Average rate} &\multicolumn{7}{c}{\textbf{85.1}} \\
+
+\end{tabular}
+\end{center}
+\end{table}
+
+
+As seen in Table~\ref{table:CK_result}, the LRE+SER representation achieves $85.1\%$ accuracy on average, outperforming $82.6\%$ by the EAI representation~\cite{Yang_SMCB12}. Once again, this demonstrates that the information captured by the SER improves the expression recognition accuracy. The algorithm~\cite{Zhao_PAMI07} using the same dynamic texture feature, LBP-TOP, has a better performance on CK+ dataset. We believe it is because the experiment in~\cite{Zhao_PAMI07} are designed as 10-fold cross validation. Although there is no subject that displays the same expression twice in CK+, this experiment setting does not strictly guarantee no test subject in training. On the contrary, our experimental design is person-independent.
+
+Besides, the CK+ data has only one or a few apex expression for each ``neutral-onset-apex" sequence. This unrealistic setting reduces the intensity of the expression captured by LRE, which appears to be more neutral compared with the LRE of FERA-GEMEP data. Fig.~\ref{fig:ck_eai} shows a visualization of LRE representations for sample sequences from the CK+ dataset. 
+
+In addition, through a diagnostic experiment, we have found that the classification performance is correlated with the training size for each class category, shown in Fig.~\ref{fig:fig_ck_size}. We plot the classification accuracy along with the training size for each category in Fig.~\ref{fig:fig_ck_size}. The categories such as Disgust, Happy, and Surprise, which have more data in training, have a much higher accuracy. This also shows the potential of improvement for our algorithm given more training data. 
+
+\begin{figure}[htbp]
+	\centering
+		\includegraphics[width=.7\columnwidth]{pics/ck_eai.png}
+	\caption{Sample Low-rank Expression representations for the CK+ dataset. The lower right grid shows the Avatar Reference generated from~\cite{Yang_SMCB12}. Although the person-specific information is attenuated as the appearance of different subject looks similar, the representative expression information is also difficult to be distinguished. They appear to be more neutral compared with the LRE representation in FERA-GEMEP dataset in Fig.~\ref{fig:lre_vs_id}.}
+	\label{fig:ck_eai}
+\end{figure}
+
+\begin{figure}[htbp]
+	\centering
+		\includegraphics[width=.8\columnwidth]{pics/fig_ck_size.png}
+	\caption{Relation between the classification accuracy and the training size for each category. The accuracy is generally higher for categories with more training data.}
+	\label{fig:fig_ck_size}
+\end{figure}
+
+
+
+\section{Conclusions\label{conclude}}
+
+% Can use something like this to put references on a page
+% by themselves when using endfloat and the captionsoff option.
+\ifCLASSOPTIONcaptionsoff
+  \newpage
+\fi
+
+
+\bibliographystyle{IEEEtran}
+\bibliography{expression}
+
+
+
+
+
+% that's all folks
+\end{document}
+
+
