@@ -206,10 +206,10 @@ The contributions of this work are the follows:
 We assume that a video is temporally segmented such that it can be described by one labeled category, \textit{e.g.}, prototype expressions (\textit{Happiness} or \textit{Anger}) or Action Units. We then seek to decompose each frame of the sequence into two representations: (1) a low-rank model represents the global appearance of the sequence; (2) a sparse component that characterizes the non-rigid muscle motion for each frame. Formally, given a sequence of faces, we denote $I_1, \ldots, I_n$ as $n$ image observations of a sequence, then
 
 \begin{equation}
-\phi(I_i,I_c) = I^{0}_i + e_i,\quad i = 1\cdots n
+I_i = I^{0}_i + e_i,\quad i = 1\cdots n
 \end{equation}
 
-\noindent where $\phi(I_i,I_c)$ is the outcome of transforming $I_i$ to a canonical reference, $I_c$. This is to model the alignment that diminish the person-specific effect. For a compact formulation, we omit the $I_c$ term in $\phi(\cdot)$ and use $\phi(I_i)$ for $\phi(I_i,I_c)$ in the following derivations. Sparse residual is modeled by an additive term $e_i$; $I^{0}_i$ is the difference between $\phi(I_i)$ and $e_i$. Further, we denote $v\in\mathscr{R}^{m\times 1}$ to be the vectorized observation $I$. Stacking multiple such vectors results in an observation matrix
+\noindent where sparse residual is modeled by an additive term $e_i$, $I^{0}_i$ is the difference between $I_i$ and $e_i$. Further, we denote $v\in\mathscr{R}^{m\times 1}$ to be the vectorized observation $I$. Stacking multiple such vectors results in an observation matrix
 
 \begin{equation}
 D = [v_1 | \cdots | v_n] = A + E
@@ -218,25 +218,29 @@ D = [v_1 | \cdots | v_n] = A + E
 \noindent where $D\in\mathscr{R}^{m\times n}$; $A = [v^{0}_{1} | \cdots | v^{0}_{n}]$ is a low-rank matrix that models the representative structure of an facial expression sequence; $E = [e_{1} | \cdots | e_{n}]$ is a sparse matrix with large magnitude deviations that models the motion of the sequence. Thus, the problem that we try to solve is
 
 \begin{equation} \label{eq:org}
-\argmin_{A,E} rank(A)+\gamma \|E\|_0  \quad s.t. \quad \phi (D) = A + E 
+\argmin_{A,E} rank(A)+\gamma \|E\|_0  \quad s.t. \quad D = A + E 
 \end{equation}
 
-\noindent where $\|\cdot\|_0$ is the $L_0$ norm which represents the number of non-zero entries in the error term $E$. $\gamma$ is the scaling parameter which controls a weight preference of the rank of $A$ and sparsity of $E$. $\phi (D)$ is a non-linear function that transforms each face ($I_i$) in $D$ to the canonical space. Here, we explicitly model the person-independent appearance through a non-linear mapping to a reference, in hope to recover the muscle motion that directly related to facial expression. Although Eq.~\ref{eq:org} is an intuitive formulation, it is intractable in practice due to the non-convexity and discontinuity of rank computation and $L_0$ norm, and the highly non-linearity of the equality constraint. We will show how we instantiate the non-linear function to a structural-matching flow field and solve this problem efficiently.
-
-\subsection{Reference-based Non-linear Mapping} 
-As suggested by many work in sparse low-rank recovery~\cite{Candes11,Lin09,Peng_CVPR10}, this problem can be relaxed by its convex surrogate
+\noindent where $\|\cdot\|_0$ is the $L_0$ norm which represents the number of non-zero entries in the error term $E$. $\gamma$ is the scaling parameter which controls a weight preference of the rank of $A$ and sparsity of $E$. Although Eq.~\ref{eq:org} is an intuitive formulation, it is intractable in practice due to the non-convexity and discontinuity of rank computation and $L_0$ norm, and the highly non-linearity of the equality constraint. As suggested by many work in sparse low-rank recovery~\cite{Candes11,Lin09,Peng_CVPR10}, this problem can be relaxed by its convex surrogate
 
 \begin{equation} \label{eq:rpca}
-\argmin_{A,E} \|A\|_*+\gamma \|E\|_1  \quad s.t. \quad \phi (D) = A + E 
+\argmin_{A,E} \|A\|_*+\gamma \|E\|_1  \quad s.t. \quad D = A + E 
 \end{equation}
 
-\noindent where $\|\cdot\|_*$ is the nuclear norm that captures the sum of all singular values of $A$, i.e., $\|A\|_*=\sum^m_{i=1}\sigma_i(A)$; $\|E\|_1=\sum_{ij}|E_{ij}|$ is the $L_1$ norm of $E$. This new objective is now continuous and convex. The remaining challenge is the non-linear mapping, $\phi (D)$, in the equality constraint. 
+\noindent where $\|\cdot\|_*$ is the nuclear norm that captures the sum of all singular values of $A$, i.e., $\|A\|_*=\sum^m_{i=1}\sigma_i(A)$; $\|E\|_1=\sum_{ij}|E_{ij}|$ is the $L_1$ norm of $E$. This new objective is now continuous and convex. 
 
-Since a face in each frame, $I_i$, contains pose and identity variations, we intend to carry out the expression recognition task in a canonical space. Specifically, we model the person-independent factor by mapping each frame to a reference face model, $I_r$. This strategy has been demonstrated effective in expression recognition particularly in predicting expressions from unseen subjects~\cite{Yang_SMCB12,Dahmane_TMM14}. One instantiation of the non-linear mapping, which we opt to use in this work, is the structural matching technique, namely, SIFT-flow. 
 
-SIFT flow~\cite{Liu_PAMI11} was originally designed to align an image to its plausible nearest neighbor which can have large variations. It robustly matches dense structural SIFT features between two images, while maintaining spatial discontinuities. The SIFT~\cite{Lowe_ICCV99} feature is first extracted in a pixel-wise fashion. For every pixel in an image, the neighborhood (e.g., $16\times16$) is divided into a $4\times4$ cell array. The orientation of each cell is quantized into 8 bins, generating a $4\times4\times8=128$-dimension vector as the SIFT representation for a pixel, or the so called SIFT image.
+\subsection{Reference-based Person-Independent Transformation} 
 
-Subsequently, a dense correspondence is established to match the two SIFT images. Similar to optical flow, the objective energy function is designed as:
+Since a face in each frame, $I_i$, contains pose and identity variations, we intend to carry out the expression recognition task in a canonical space. Specifically, we model the person-independent factor by mapping each face to a reference face model, $I_r$. This strategy has been demonstrated effective in expression recognition particularly in predicting expressions from unseen subjects~\cite{Yang_SMCB12,Dahmane_TMM14}. We model the mapping by a transformation function on the image observation, $D$. Thus, the objective is written as
+
+\begin{equation} \label{eq:rpca}
+\argmin_{A,E} \|A\|_*+\gamma \|E\|_1  \quad s.t. \quad \phi (D) = A + E, 
+\end{equation}
+
+Here, $\phi (D)$ is defined as a generic function that transforms each face ($I_i$) in $D$ to the canonical space. One instantiation of the non-linear mapping, which we opt to use in this work, is the structural matching technique, namely, SIFT-flow. 
+
+SIFT flow~\cite{Liu_PAMI11} was originally designed to align an image to its plausible nearest neighbor which can have large variations. It robustly matches dense structural SIFT features between two images, while maintaining spatial discontinuities. The SIFT~\cite{Lowe_ICCV99} feature is first extracted in a pixel-wise fashion. For every pixel in an image, the neighborhood (e.g., $16\times16$) is divided into a $4\times4$ cell array. The orientation of each cell is quantized into 8 bins, generating a $4\times4\times8=128$-dimension vector as the SIFT representation for a pixel, or the so called SIFT image. Subsequently, a dense correspondence is established to match the two SIFT images. Similar to optical flow, the objective energy function is designed as:
 \begin{align}
 	\label{data_term}
 	E(\textbf{w})=&\sum_\textbf{p} min(\left\|s_1 (\textbf{p})-s_2 (\textbf{p}+\textbf{w}(\textbf{p}))\right\|_1 ,t)+
