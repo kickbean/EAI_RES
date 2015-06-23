@@ -57,7 +57,7 @@
 \usepackage{hyperref}
 \usepackage{algorithm}
 \usepackage{algpseudocode}
-
+\usepackage{booktabs}
 % gray scaled table
 %\newcommand\gray{gray}
 %
@@ -117,7 +117,7 @@ IEEEtran.cls for Computer Society Journals}
 % As a general rule, do not put math, special symbols or citations
 % in the abstract or keywords.
 \begin{abstract}
-Person-independent expression recognition aims to recognizing facial expressions of an \textit{unseen} subject from videos. This remains a challenging problem due to that the facial muscle motion for a typical facial expression (e.g., anger), which should be similar irrespective of the subject identity, is difficult to be characterized across population. The classifiers can be easily over-fitted to person-specific facial appearances rather than the person-independent muscle motion from expressions. Additionally, the problem becomes even more challenging when the rigid head motion is coupled with non-rigid facial muscle motion in uncontrolled settings. To tackle these challenges, we model an expression video as a combination of two parts: (1) a set of low-rank components that are representative of person-independent expression prototypes, namely Low-rank Expressions (LRE); (2) a set of sparse appearance residuals that capture the muscle motion of individual frames, namely Sparse Expression Residuals (SER). To avoid over-fitting, we explicitly model the person-independent transformation of individual frames to a canonical reference space in the minimization objective. We show that the objective formulation can be simplified and solved by an efficient sparse low-rank recovery algorithm. We then carry out a comparative study of the recently successful Emotion Avatar Images~\cite{Yang_SMCB12} (EAI) models and the proposed LRE representation, qualitatively illustrating the merits of these models in representing expressions in a person-independent manner. We also demonstrate that the SER can further improve the recognition performance, when both static and dynamic texture features are extracted out of SER. Extensive qualitative and quantitative results demonstrate that our approach not only establishes informative visual representations but also yields the state-of-the-art recognition performance.
+Person-independent expression recognition aims to recognizing facial expressions of an \textit{unseen} subject from videos. This remains a challenging problem due to that the facial muscle motion for a typical facial expression, which should be similar irrespective of the subject identity, is difficult to be characterized across population. The classifiers can be easily over-fitted to person-specific facial appearances rather than the person-independent muscle motion from expressions. Additionally, the problem becomes even more challenging when the rigid head motion is coupled with non-rigid facial muscle motion in uncontrolled settings. To tackle these challenges, we model an expression video as a combination of two parts: (1) a set of low-rank components that are representative of person-independent expression prototypes, namely Low-rank Expressions (LRE); (2) a set of sparse appearance residuals that capture the muscle motion of individual frames, namely Sparse Expression Residuals (SER). To avoid over-fitting, we explicitly model the person-independent transformation of individual frames to a canonical reference space in the minimization objective. We show that the objective formulation can be simplified and solved by an efficient sparse low-rank recovery algorithm. We then carry out a comparative study of the recently successful Emotion Avatar Images~\cite{Yang_SMCB12} (EAI) models and the proposed LRE representation, qualitatively illustrating the merits of these models in representing expressions in a person-independent manner. We also demonstrate that the SER can further improve the recognition performance, when both static and dynamic texture features are extracted out of SER. Extensive qualitative and quantitative results demonstrate that our approach not only establishes informative visual representations but also yields the state-of-the-art recognition performance.
 
 
 \end{abstract}
@@ -151,7 +151,7 @@ person-independent facial expression, low-rank expression, sparse expression res
 \begin{figure}[htbp]
 	\centering
 		\includegraphics[width=.95\columnwidth]{pics/splash.png}
-	\caption{The overview of our approach. We observe that (1) a facial expression sequence possess an inherent \textit{global} model (e.g., lip corner expansion for \textit{Happiness} in this case); and (2) each frame has its own \textit{local} properties (e.g., various muscle motion intensities), which describe the facial dynamics. Due to the face anatomy constraints~\cite{Ekman78}, the muscle motion that characterize the local deformation is sparsely distributed. Inspired by these observations, we model each frame as (1) a low-rank structure that represents the global expression appearance jointly estimated from the entire sequence (i.e., LRE), and (2) an additive sparse residual that represents the deviations from the low-rank structure (i.e., SER). Moreover, the person-independent factor is modeled as a transformation to a canonical space (Reference face), avoiding over-fitting for classification. Both LRE and SER provide viable manners to extract meaningful facial expression dynamics, yielding superior recognition performances. To appreciate the information captured by the LRE and SER representations, the bottom row shows the summation of the decomposed sequence. The summation of LREs retains the global appearance and the summation of SERs captures the local motion around mouth and eye areas.}
+	\caption{The overview of our approach. We observe that (1) a facial expression sequence possess an inherent \textit{global} model (\textit{e.g.}, lip corner expansion for \textit{Happiness} in this case); and (2) each frame has its own \textit{local} properties (\textit{e.g.}, various muscle motion intensities), which describe the facial dynamics. Due to the face anatomy constraints~\cite{Ekman78}, the muscle motion that characterize the local deformation is sparsely distributed. Inspired by these observations, we model each frame as (1) a low-rank structure that represents the global expression appearance jointly estimated from the entire sequence (\textit{i.e.}, LRE), and (2) an additive sparse residual that represents the deviations from the low-rank structure (\textit{i.e.}, SER). Moreover, the person-independent factor is modeled as a transformation to a canonical space (Reference face), avoiding over-fitting for classification. Both LRE and SER provide viable manners to extract meaningful facial expression dynamics, yielding superior recognition performances. To appreciate the information captured by the LRE and SER representations, the bottom row shows the mean representation of the decomposed sequence. The mean LRE retains the global appearance and the mean SER captures the local motion around mouth and eye areas.}
 	\label{fig:splash}
 \end{figure}
 
@@ -167,7 +167,7 @@ In this paper, the problem we intend to solve is as follows: given a video seque
 
 From a video processing perspective, the approaches can be categorized into three strategies for video-based expression recognition. First, A wide range of methods~\cite{Bartlett_FG11}\cite{Valstar_SMCB12} process each frame individually, where they extract features from each frame and carry out majority voting for the entire sequence. Second, temporal features are used to capture the muscle dynamics of facial expressions~\cite{Zhao_PAMI07}\cite{Huang11}. These approaches typically requires accurate alignment results in order to generate meaningful dynamic features. Third, an entire video is summarized into an image-based representation that captures the expression appearance~\cite{Yang_SMCB12}\cite{Dahmane_TMM14}. This approach completely abandons the dynamic information, and cannot model the temporal characteristic of facial expressions. In essence, the aforementioned strategies summarize the video-based expression data at different resolutions. 
 
-In this work, we depart from all the previous strategies and analyze the facial expression at a finer resolution. We observe that, on one hand, samples of one expression sequence are correlated and possess similar \textit{global} characteristics (e.g., lip corner expansion for \textit{Happiness}); one the other hand, each sample has its own \textit{local} properties (e.g., various muscle motion intensities for different expression stages such as \textit{onset}, \textit{apex}, or \textit{offset}), which could be used to describe facial dynamics. Due to the face anatomy constraints~\cite{Ekman78}, the muscle motion that characterize the local deformation is sparsely distributed. Inspired by these observations, we model each frame as (1) a low-rank structure that represents the global expression appearance jointly estimated from the entire sequence, and (2) an additive sparse residual that represents the deviations from the low-rank structure. As shown in Fig.~\ref{fig:splash}, both static and dynamic features are extracted from the Low-rank Expression (LRE) and the Sparse Expression Residual (SER) representations for expression recognition. In addition, we explicitly model the person-independent facial expression appearance transformation in a low-rank recovery framework. The person-independent factor is modeled as a non-linear transformation function, which can be approximated by matching a target face to a canonical reference face in a structural sense. Concretely, we approximate this non-linearity by the correspondence of two SIFT feature descriptors, namely SIFT-flow~\cite{Liu_PAMI11}. We then show that the person-independent transformation is independent of the low-rank recovery procedure, leading to an efficient algorithm in the pursuit of the sparse low-rank facial expression appearances. 
+In this work, we depart from all the previous strategies and analyze the facial expression at a finer resolution. We observe that, on one hand, samples of one expression sequence are correlated and possess similar \textit{global} characteristics (\textit{e.g.}, lip corner expansion for \textit{Happiness}); one the other hand, each sample has its own \textit{local} properties (\textit{e.g.}, various muscle motion intensities for different expression stages such as \textit{onset}, \textit{apex}, or \textit{offset}), which could be used to describe facial dynamics. Due to the face anatomy constraints~\cite{Ekman78}, the muscle motion that characterize the local deformation is sparsely distributed. Inspired by these observations, we model each frame as (1) a low-rank structure that represents the global expression appearance jointly estimated from the entire sequence, and (2) an additive sparse residual that represents the deviations from the low-rank structure. As shown in Fig.~\ref{fig:splash}, both static and dynamic features are extracted from the Low-rank Expression (LRE) and the Sparse Expression Residual (SER) representations for expression recognition. In addition, we explicitly model the person-independent facial expression appearance transformation in a low-rank recovery framework. The person-independent factor is modeled as a non-linear transformation function, which can be approximated by matching a target face to a canonical reference face in a structural sense. Concretely, we approximate this non-linearity by the correspondence of two SIFT feature descriptors, namely SIFT-flow~\cite{Liu_PAMI11}. We then show that the person-independent transformation is independent of the low-rank recovery procedure, leading to an efficient algorithm in the pursuit of the sparse low-rank facial expression appearances. 
 
 In what follows, Section~\ref{sec:related} reviews the related work in the literature and presents our contributions. Subsequently, Section~\ref{sec:decompose} details the modeling of expression images as Low-rank Expression (LRE) and Sparse Expression Residual (SER) representations. In particular, in Section~\ref{sec:eai}, we discuss the relationship of LER with the Emotion Avatar Images (EAI), illustrating in both theory and visual results. Section~\ref{sec:exp} demonstrates the effectiveness of LRE+SER modeling via extensive experimental results. Finally, Section~\ref{sec:conclude} concludes the paper.
 
@@ -178,11 +178,11 @@ We first review the related works in the literature for both facial expression r
 
 \subsection{Facial Expression Recognition}
 
-There is a rich body of work in the literature for automatic facial expression analysis. Earlier work have been focused on recognizing expressions from \textit{static} images, where both facial geometry and textures are used for this task~\cite{Pantic_PAMI00}\cite{Essa_PAMI97}\cite{Donato_PAMI99}. These work contribute to the recently expression analysis in videos~\cite{Bartlett_FG11}\cite{Kaliouby_SMC04}\cite{Valstar_FERA11}, where these systems treat frame individually and attempt to recognize facial expression or Action Units~\cite{Ekman78}. The texture features can be described by descriptors such as Haar-like features~\cite{Whitehill_FG06}, Gabor filters~\cite{Lyons_PAMI99}~\cite{Bartlett_FG11}, Local Binary Patterns (LBP)~\cite{Shan_IVC09}~\cite{Jiang_FG11}, Edge Orientation Histogram~\cite{Levi_CVPR04}, Histogram of Oriented Gradients~\cite{}\cite{}, Local Phase Quantization~\cite{LPQ}.
+There is a rich body of work in the literature for automatic facial expression analysis. Earlier work have been focused on recognizing expressions from \textit{static} images, where both facial geometry and textures are used for this task~\cite{Pantic_PAMI00}\cite{Essa_PAMI97}\cite{Donato_PAMI99}. These work contribute to the recently expression analysis in videos~\cite{Bartlett_FG11}\cite{Kaliouby_SMC04}\cite{Valstar_FERA11}, where these systems treat frame individually and attempt to recognize facial expression or Action Units~\cite{Ekman78}. The texture features can be described by descriptors such as Haar-like features~\cite{Whitehill_FG06}, Gabor filters~\cite{Lyons_PAMI99}~\cite{Bartlett_FG11}, Local Binary Patterns (LBP)~\cite{Shan_IVC09}~\cite{Jiang_FG11}, Edge Orientation Histogram~\cite{Levi_CVPR04}, Histogram of Oriented Gradients~\cite{Dalal_CVPR05}\cite{Dhall_FERA11}\cite{Dahmane_FERA11}, Local Phase Quantization~\cite{LPQ}.
 
-As pointed out in~\cite{Ekman2005}~\cite{Ambadar05}, facial muscle \textit{dynamics} play an important role in spontaneous expressions. The pioneer work by Yacoob and Davis~\cite{Yacoob_PAMI96} describes the facial dynamics using optical flow. This immediately raises a question that optical flow highly relies on accurate face tracking and alignment. It is assumed in~\cite{Yacoob_PAMI96} that subjects are with controlled frontal head pose, and thus, a simple thresholding procedure can rule out small motion cause by noise or tracking errors. Moreover, this work ignores the facial texture information, which later works find quite successful in characterizing facial dynamics. For example, Zhao and Pietik\"ainen~\cite{Zhao_PAMI07} extend LBP to the temporal space, namely three orthogonal planes (LBP-TOP), by taking into account the co-occurrence of the patterns. It combines appearance and motion together and achieves outstanding performance for facial expression recognition under controlled settings, e.g., the Cohn-Kanade database~\cite{CKplus}. Similarly, more texture descriptors~\cite{LPQ-TOP} can be extended to spatial-temporal settings, yielding a superior performance. The muscle dynamics can also be characterized by the motion of facial landmarks (e.g., eyebrow corner, mouth corner, etc.). Valstar and Pantic~\cite{Valstar_SMCB12} track a set of landmarks over time and infer facial expressions based on the dynamics of landmark. 
+As pointed out in~\cite{Ekman2005}~\cite{Ambadar05}, facial muscle \textit{dynamics} play an important role in spontaneous expressions. The pioneer work by Yacoob and Davis~\cite{Yacoob_PAMI96} describes the facial dynamics using optical flow. This immediately raises a question that optical flow highly relies on accurate face tracking and alignment. It is assumed in~\cite{Yacoob_PAMI96} that subjects are with controlled frontal head pose, and thus, a simple thresholding procedure can rule out small motion cause by noise or tracking errors. Moreover, this work ignores the facial texture information, which later works find quite successful in characterizing facial dynamics. For example, Zhao and Pietik\"ainen~\cite{Zhao_PAMI07} extend LBP to the temporal space, namely three orthogonal planes (LBP-TOP), by taking into account the co-occurrence of the patterns. It combines appearance and motion together and achieves outstanding performance for facial expression recognition under controlled settings, \textit{e.g.}, the Cohn-Kanade database~\cite{CKplus}. Similarly, more texture descriptors~\cite{LPQ-TOP} can be extended to spatial-temporal settings, yielding a superior performance. The muscle dynamics can also be characterized by the motion of facial landmarks (\textit{e.g.}, eyebrow corner, mouth corner, etc.). Valstar and Pantic~\cite{Valstar_SMCB12} track a set of landmarks over time and infer facial expressions based on the dynamics of landmark. 
 
-Facial dynamics is easier to capture in controlled lab settings~\cite{CKplus}, where subjects are constraint to have limited head motion and exaggerate facial muscle motion for expression. However, in a more realistic and uncontrolled scenario (e.g., FERA dataset~\cite{Valstar_FERA11}), extracting facial dynamics highly relies on accurate landmark tracking and face alignment. The facial expression imagery consists of the ``compound motion'' from the rigid head motion and deformable facial muscle motion. Ideally, the head motion should be corrected to fully characterize the non-rigid muscle motion, which is directly related to the expressions. It is shown in~\cite{Valstar12}\cite{Yang_SMCB12} that without a reliable alignment result, the dynamic feature is even inferior than static features. Therefore, in this work, we establish a framework that aligns expression images under compound motion from region-based correspondences (in contrast to point-based correspondences), which helps to extract dynamical features much more effectively. 
+Facial dynamics is easier to capture in controlled lab settings~\cite{CKplus}, where subjects are constraint to have limited head motion and exaggerate facial muscle motion for expression. However, in a more realistic and uncontrolled scenario (\textit{e.g.}, FERA dataset~\cite{Valstar_FERA11}), extracting facial dynamics highly relies on accurate landmark tracking and face alignment. The facial expression imagery consists of the ``compound motion'' from the rigid head motion and deformable facial muscle motion. Ideally, the head motion should be corrected to fully characterize the non-rigid muscle motion, which is directly related to the expressions. It is shown in~\cite{Valstar12}\cite{Yang_SMCB12} that without a reliable alignment result, the dynamic feature is even inferior than static features. Therefore, in this work, we establish a framework that aligns expression images under compound motion from region-based correspondences (in contrast to point-based correspondences), which helps to extract dynamical features much more effectively. 
 
 
 \subsection{Sparse Representation}
@@ -227,7 +227,7 @@ D = [v_1 | \cdots | v_n] = A + E
 \argmin_{A,E} \|A\|_*+\gamma \|E\|_1  \quad s.t. \quad D = A + E 
 \end{equation}
 
-\noindent where $\|\cdot\|_*$ is the nuclear norm that captures the sum of all singular values of $A$, i.e., $\|A\|_*=\sum^m_{i=1}\sigma_i(A)$; $\|E\|_1=\sum_{ij}|E_{ij}|$ is the $L_1$ norm of $E$. This new objective is now continuous and convex. 
+\noindent where $\|\cdot\|_*$ is the nuclear norm that captures the sum of all singular values of $A$, \textit{i.e.}, $\|A\|_*=\sum^m_{i=1}\sigma_i(A)$; $\|E\|_1=\sum_{ij}|E_{ij}|$ is the $L_1$ norm of $E$. This new objective is now continuous and convex. 
 
 
 \subsection{Reference-based Person-Independent Transformation} 
@@ -240,7 +240,7 @@ Since a face in each frame, $I_i$, contains pose and identity variations, we int
 
 Here, $\phi (D)$ is defined as a generic function that transforms each face, $I_i$,  in $D$ to the canonical space. One instantiation of the non-linear mapping, which we opt to use in this work, is the structural matching technique, namely, SIFT-flow. 
 
-SIFT flow~\cite{Liu_PAMI11} was originally designed to align an image to its plausible nearest neighbor which can have large variations. It robustly matches dense structural SIFT features between two images, while maintaining spatial discontinuities. The SIFT~\cite{Lowe_ICCV99} feature is first extracted in a pixel-wise fashion. For every pixel in an image, the neighborhood (e.g., $16\times16$) is divided into a $4\times4$ cell array. The orientation of each cell is quantized into 8 bins, generating a $4\times4\times8=128$-dimension vector as the SIFT representation for a pixel, or the so called SIFT image. Subsequently, a dense correspondence is established to match the two SIFT images. Similar to optical flow, the objective energy function is designed as:
+SIFT flow~\cite{Liu_PAMI11} was originally designed to align an image to its plausible nearest neighbor which can have large variations. It robustly matches dense structural SIFT features between two images, while maintaining spatial discontinuities. The SIFT~\cite{Lowe_ICCV99} feature is first extracted in a pixel-wise fashion. For every pixel in an image, the neighborhood (\textit{e.g.}, $16\times16$) is divided into a $4\times4$ cell array. The orientation of each cell is quantized into 8 bins, generating a $4\times4\times8=128$-dimension vector as the SIFT representation for a pixel, or the so called SIFT image. Subsequently, a dense correspondence is established to match the two SIFT images. Similar to optical flow, the objective energy function is designed as:
 \begin{align}
 	\label{data_term}
 	E(\textbf{w})=&\sum_\textbf{p} min(\left\|s_1 (\textbf{p})-s_2 (\textbf{p}+\textbf{w}(\textbf{p}))\right\|_1 ,t)+
@@ -295,7 +295,7 @@ where $D^*=D+S$. Now, with this linear constraint, our problem can be solved by 
 	\end{dcases}
 \end{equation}
 
-The comprehensive procedure is summarized in Algorithm~\ref{alg}. Parameters are empirically chosen based on the analysis in~\cite{Lin09}, i.e., $\delta\leq10^{-5}$, $\eta=0.9$, $\mu_0=0.99\|D\|_2$, where $\|\cdot\|_2$ is the spectral norm. We refer interested readers to~\cite{Lin09} for more details on the parameter setup. 
+The comprehensive procedure is summarized in Algorithm~\ref{alg}. Parameters are empirically chosen based on the analysis in~\cite{Lin09}, \textit{i.e.}, $\delta\leq10^{-5}$, $\eta=0.9$, $\mu_0=0.99\|D\|_2$, where $\|\cdot\|_2$ is the spectral norm. We refer interested readers to~\cite{Lin09} for more details on the parameter setup. 
 
 \begin{algorithm}[htb]
     \caption{Expression Decomposition via Convex Programming}
@@ -361,29 +361,52 @@ As mentioned earlier, the expression appearance captured by the LRE reveals the 
 
 \section{Experimental Results\label{sec:exp}}
 
-We test our algorithm on the \textit{uncontrolled} dataset, FERA-GEMEP~\cite{FERA_data}. Qualitative results are shown first to visually demonstrate the validity of our model. The quantitative results are then provided such that our method not only outperform the state-of-the-art approaches, but also has the potential of improvement given more data. We also provided results on the \textit{controlled} dataset, CK+~\cite{CKplus} for completeness of the experiment.
+We conduct experiments on the \textit{uncontrolled} benchmark, FERA-GEMEP dataset~\cite{FERA_data}. Qualitative results are first provided to visually demonstrate the validity of our method. The quantitative results then show that our method not only outperform the state-of-the-art approaches, but also has the potential of improvement given more data. We also provided results on the \textit{controlled} benchmark, CK+ dataset~\cite{CKplus}, for the completeness of the experiment.
 
+\subsection{Experimental Setup}
+
+In this work, the faces are first detected using the successful Viola-Jones face detector~\cite{Viola_IJCV04}. We then follow the standard image pre-processing steps in the literature~\cite{Valstar12}\cite{Yang_SMCB12} for a better and fair comparison. The detected face images are resized to $200\times200$ pixels, and then divided into blocks of size $20\times20$. Texture features are extracted at each local block and then concatenated to form a final feature vector for classification. The feature extraction is conducted on both LRE and SER modalities, respectively. To prevent over-fitting, Principal Component Analysis (PCA) is carried out and the space with $99\%$ of the variation is used for dimension reduction. Finally, Support Vector Machine (SVM)~\cite{libsvm} with linear kernel is used for our multi-class classification. The results of each modality and their combinations are all reported in the paper. 
+
+\textbf{Static Feature:} various texture feature descriptors such as LBP and LPQ filters are used for feature extraction. To characterize the entire sequence using static feature, there are two strategies in general. First, one can extract features from individual frames and train a frame-based classifier. A final decision can be fused at the decision level by majority voting. Second, the feature extraction and classification can be conducted on the mean representation of the entire sequence. We have tested both strategies and found superior performance and faster processing speed for the latter strategy in general. Besides, this strategy is also used in~\cite{Yang_SMCB12}. Thus, we only report the results on the mean representation for the static feature extraction in this paper. 
+\begin{enumerate}
+\item Local Binary Pattern (LBP): LBP uses the local contrast statistics to characterize the image texture. In this work, we use the uniform LBP operator~\cite{Ojala_PAMI02} that generates 59 basic patterns for a local patch. Thus, the total feature dimension is $59\times 10\times 10=5900$. 
+\item Local Phase Quantization (LPQ): proposed by Ojansivu \textit{et al.} in~\cite{LPQ}, LPQ descriptor is insensitive to image blur. The spatial blurring is modeled by the multiplication of the original image and a point spread function (PSF) in frequency domain. The key observation is that, when the PSF is centrally symmetric, the phase of the original image is invariant. The feature size for each patch is $256$, yielding a feature dimension of $25600$ in general. 
+\end{enumerate}
+
+\textbf{Dynamic Feature:} the LBP and LPQ can be extended to the temporal domain, capturing the dynamics of the texture. We consider two important variants, namely TOP-LBP and TOP-LPQ for dynamic feature extraction.
+\begin{enumerate}
+\item Three Orthogonal Planes LBP (TOP-LBP): the key idea of this dynamic histogram approach is to extend XY 2-D plane to three orthogonal directions, namely XY, XT, and YT, where the letter ``\textbf{T}'' denotes the temporal axis. The pattern co-occurrences of each plane are computed by their corresponding histograms; all histograms are then stacked to a single feature vector. This enlarges the feature dimension by a multiple of $3$. We uses a similar region segmentation as the aforementioned static feature and the total feature dimension is $3\times 5900=17700$ for TOP-LBP.
+
+\item Three Orthogonal Planes LPQ (TOP-LPQ): a similar dynamic texture strategy can be applied to the LPQ extractor, resulting in a total feature dimension of $3\times 25600=76800$.  
+\end{enumerate} 
+
+In the following sections, we will report results of various combinations of static and dynamic features on both LRE and SER representations. 
 
 \subsection{Uncontrolled Data: FERA-GEMEP Dataset}
 
-The FERA-GEMEP~\cite{FERA_data} is an uncontrolled facial expression dataset, i.e., in the process of data collection, subjects are asked to convey one of the following five emotions at a time: \textit{Anger}, \textit{Fear}, \textit{Joy}, \textit{Relief}, \textit{Sadness}, without any control of their head or body movement. Each video segment contains one subject displaying expressions that corresponds to one emotion. The average video length is about 2 seconds with 30 fps frame rate. Most subjects are uttering some meaningless phrases while displaying expressions, and there are 3 to 5 videos for each subject with the same emotion. All experiments in this paper are designed to be person-independent (i.e. no test subject is in the training data), the performance of which is of the most interest because it shows the generalization ability of the algorithm. 
+The FERA-GEMEP~\cite{FERA_data} is an uncontrolled facial expression dataset, \textit{i.e.}, in the process of data collection, subjects are asked to convey one of the following five emotions at a time: \textit{Anger}, \textit{Fear}, \textit{Joy}, \textit{Relief}, \textit{Sadness}, without any control of their head or body movement. Each video segment contains one subject displaying expressions that corresponds to one emotion. The average video length is about 2 seconds with 30 fps frame rate. Most subjects are uttering some meaningless phrases while displaying expressions, and there are 3 to 5 videos for each subject with the same emotion. All experiments in this paper are designed to be \textit{person-independent} (\textit{i.e.} no test subject is in the training data), the performance of which is of the most interest because it shows the generalization ability of the algorithm. 
 
 
-The FERA challenge consists of a training and a test set. There are 7 subjects (3 males and 4 females) in the training set, and 6 subjects (3 males and 4 females) in the test set, 3 of which appears in training. The facial expression videos of both sets are provided, while only the ground truth label for the training set is available. Fig.~\ref{fig:rep_vs_id} provides a visualization of decomposed representation, namely LRE and SRE, of sample expression video of various subjects for all emotion categories in the FERA training set. The participants can use other publicly available data in addition to FERA training set for training. The predictions on the test set are submitted to the FERA organizer for an independent evaluation. Table~\ref{table:fera_team} shows the challenge participants\footnote{\label{teams}Teams are ranked based on the FERA Challenge person-independent test. \textbf{UCR}: University of California at Riverside; \textbf{UCSD-CERT}: University of California at San Diego; \textbf{UIUC-UMC}: University of Illinois at Urbana-Champaign; University of Missouri; \textbf{KIT}: Karlsruhe Institute of Technology; \textbf{ANU}: Australian National University; \textbf{NUS}: National University of Singapore; \textbf{QUT-CMU}: Queensland University of Technology; Carnegie Mellon University; \textbf{UCL}: University College London; \textbf{UMont.}: University of Montreal;  \textbf{MIT-Cambridge}: Massachusetts Institute of Technology; University of Cambridge.} and the corresponding person-independent test results. 
+The FERA challenge consists of a training and a test set. There are 7 subjects (3 males and 4 females) in the training set, and 6 subjects (3 males and 4 females) in the test set, 3 of which appears in training. The facial expression videos of both sets are provided, while only the ground truth label for the training set is available. Fig.~\ref{fig:rep_vs_id} provides a visualization of the mean LRE and SRE representations of sample expression videos of various subjects for all emotion categories in the FERA training set. The participants can use other publicly available data in addition to FERA training set for training. The predictions on the test set are submitted to the FERA organizer for an independent evaluation. Table~\ref{table:fera_team} shows the challenge participants\footnote{\label{teams}Teams are ranked based on the FERA Challenge person-independent test. \textbf{UCR}: University of California at Riverside; \textbf{UCSD-CERT}: University of California at San Diego; \textbf{UIUC-UMC}: University of Illinois at Urbana-Champaign; University of Missouri; \textbf{KIT}: Karlsruhe Institute of Technology; \textbf{ANU}: Australian National University; \textbf{NUS}: National University of Singapore; \textbf{QUT-CMU}: Queensland University of Technology; Carnegie Mellon University; \textbf{UCL}: University College London; \textbf{UMont.}: University of Montreal;  \textbf{MIT-Cambridge}: Massachusetts Institute of Technology; University of Cambridge.} and the corresponding person-independent test results. 
 
-Since the emotion ground truth label is only available for the FERA training set, we evaluate our algorithm using this set. We carried out leave-one-subject-out cross validation using LRE and SRE individually as well as their combination and the results are shown Table~\ref{table:comp}. In comparison, we report the approach from~\cite{Yang_SMCB12} for the following two reasons: (1)~\cite{Yang_SMCB12} has the best performance in FERA challenge; (2) unlike most of the other methods which uses additional training data,~\cite{Yang_SMCB12} solely uses the FERA training set. After the image representations (i.e., LRE and SER) are established, we follow the same feature extraction schema as~\cite{Valstar12}\cite{Yang_SMCB12} for better comparison. The image representations are first resized to $200\times200$ pixels, and then divided into blocks of size $20\times20$. Various texture feature descriptors such as LBP, LPQ, Gabor filters are used for feature extraction at each block. The features extracted on LRE and SER representations are then fused by concatenation. Subsequently, a linear SVM~\cite{libsvm} is used similar to~\cite{Valstar12}\cite{Yang_SMCB12}. Table~\ref{table:comp} shows the person-independent experimental results comparison. 
-
-In this paper, we also test how facial dynamics effect the recognition performance. Since each frame of a sequence is decomposed into a low-rank and a sparse component, we compute temporal LBP and LPQ features in Three Orthogonal Planes (TOP), termed, LBP-TOP~\cite{Zhao_PAMI07} and LPQ-TOP~\cite{LPQ-TOP}. 
+Since the ground truth label is only available for the FERA training set, we evaluate our algorithm using this set. We carried out leave-one-subject-out cross validation using both static and dynamic features extracted from the LREs and SREs individually as well as their combinations, the results of which are shown Table~\ref{table:comp}. In addition, we report the results of the best performing approach~\cite{Yang_SMCB12} in FERA challenge as a baseline comparison. We should stress that unlike most of the other methods which uses additional training data, only this work and~\cite{Yang_SMCB12} solely uses the FERA training set. 
 
 
-As seen from Table~\ref{table:comp}, the performance using EAI representation~\cite{Yang_SMCB12} is on par with the LRE representation. This quantitative result is congruent with our qualitative analysis in Section~\ref{sec:eai} that EAI and LRE has very similar appearance. The combination of LRE and SRE consistently outperforms other approaches, and the gain over LRE is around $10\%$ with the extra information captured in SRE. The LPQ texture description has a slightly better performance over the LBP and Gabor features. The confusion matrix for the best performance setting, i.e., LRE+SER with LPQ, is provided in Table.~\ref{table:mat_fera}. If mentioned otherwise, the following analysis are using the best performing LPQ feature. 
+Table~\ref{table:comp} shows the person-independent experimental results comparison. 
+
+1. LRE by itself is more informative than SER
+2. dynamic helps
+
+
+
+As seen from Table~\ref{table:comp}, the performance using EAI representation~\cite{Yang_SMCB12} is on par with the LRE representation. This quantitative result is congruent with our qualitative analysis in Section~\ref{sec:eai} that EAI and LRE has very similar appearance. The combination of LRE and SRE consistently outperforms other approaches, and the gain over LRE is around $10\%$ with the extra information captured in SRE. The LPQ texture description has a slightly better performance over the LBP and \textcolor[rgb]{1,0,0}{Gabor} features. The confusion matrix for the best performance setting, \textit{i.e.}, LRE+SER with LPQ, is provided in Table.~\ref{table:mat_fera}. If mentioned otherwise, the following analysis are using the best performing LPQ feature. 
 
 \begin{table}
 \caption{The rank of person-independent test in FERA Challenge\label{table:fera_team}}
 \centering
-\begin{tabular}{|c|c|}
-\hline
-	Team~\ref{teams} & Accuracy \\ \hline
+\begin{tabular}{ll}
+\toprule
+	Teams~\ref{teams} & Accuracy \\ \midrule
 	UCR 								& 0.75 \\ 
 	UCSD-CERT						& 0.71 \\ 
 	UIUC-UMC						& 0.66 \\ 
@@ -395,24 +418,63 @@ As seen from Table~\ref{table:comp}, the performance using EAI representation~\c
 	UMont								& 0.58 \\ 
 	MIT-Cambridge				& 0.45 \\ 
 	Baseline						& 0.44 \\
-\hline
+\bottomrule
 \end{tabular}
 \end{table}
 
-\begin{table}[htbp]
-\caption{The accuracy comparison of our approach to the best performance system in the FERA Challenge\label{table:comp}}
-\begin{center}
-\begin{tabular}{|c|c|c|c|c|c|}
-\hline
-	Approach 									& TOP-LPQ	& TOP-LBP 	& LPQ 	& LBP 	& Gabor \\ \hline
-	LRE+SER										& \textbf{0.78} 		& 0.72 	& 0.76 	&	0.73	& 0.68	\\
-	UCR	\cite{Yang_SMCB12}		& 0.70 		& 0.67 	& \textbf{0.71} 	& 0.68	& 0.66	\\ 
-	LRE												& \textbf{0.72} 		& 0.66 	& 0.70 	& 0.68	& 0.66	\\
-	SER												& \textbf{0.65} 		& 0.65 	& 0.62 	& 0.60	& 0.55	\\
-\hline
+%\begin{table}[htbp]
+%\caption{The accuracy comparison of our approach to the best performance system in the FERA Challenge\label{table:comp}}
+%\begin{center}
+%\begin{tabular}{|c|c|c|c|c|c|}
+%\toprule
+	%Approach 									& TOP-LPQ	& TOP-LBP 	& LPQ 	& LBP 	& Gabor \\ \midrule
+	%LRE+SER										& \textbf{0.78} 		& 0.72 	& 0.76 	&	0.73	& 0.68	\\
+	%UCR	\cite{Yang_SMCB12}		& 0.70 		& 0.67 	& \textbf{0.71} 	& 0.68	& 0.66	\\ 
+	%LRE												& \textbf{0.72} 		& 0.66 	& 0.70 	& 0.68	& 0.66	\\
+	%SER												& \textbf{0.65} 		& 0.65 	& 0.62 	& 0.60	& 0.55	\\
+%\bottomrule
+%\end{tabular}
+%\end{center}
+%\end{table}
+
+
+\begin{table}[!t]
+\caption{Classification accuracy on FERA-GEMEP dataset using LBP features\label{table:comp_lbp}}
+\centering
+\scriptsize
+\begin{tabular}{lll||lll}
+\toprule
+LRE & SER & Accuracy	& LRE	& SER	& Accuracy \\ \midrule 
+LBP	& -		& 0.68	& - & LBP & 0.6 \\
+TOP-LBP & - & 0.66 & - & TOP-LBP & 0.62 \\
+LBP & LBP & 0.7 & LBP & TOP-LBP & 0.72 \\
+TOP-LBP & LBP & 0.7 & TOP-LBP & TOP-LBP & \textbf{0.73} \\ \midrule
+\multicolumn{2}{l}{UCR~\cite{Yang_SMCB12}: LBP} & 0.68 & \multicolumn{2}{l}{UCR~\cite{Yang_SMCB12}: TOP-LBP} & 0.67 \\
+\bottomrule
+
 \end{tabular}
-\end{center}
 \end{table}
+
+
+\begin{table}[!t]
+\caption{Classification accuracy on FERA-GEMEP dataset using LPQ features\label{table:comp_lpq}}
+\centering
+\scriptsize
+\begin{tabular}{lll||lll}
+\toprule
+LRE & SER & Accuracy	& LRE	& SER	& Accuracy \\ \midrule 
+LPQ	& -		& 0.7	& - & LPQ & 0.62 \\
+TOP-LPQ & - & 0.72 & - & TOP-LPQ & 0.65 \\
+LPQ & LPQ & 0.75 & LPQ & TOP-LPQ & 0.77 \\
+TOP-LPQ & LPQ & 0.76 & TOP-LPQ & TOP-LPQ & \textbf{0.78} \\ \midrule
+\multicolumn{2}{l}{UCR~\cite{Yang_SMCB12}: LPQ} & 0.71 & \multicolumn{2}{l}{UCR~\cite{Yang_SMCB12}: TOP-LPQ} & 0.69 \\
+\bottomrule
+
+\end{tabular}
+\end{table}
+
+
+
 
 \begin{table}[htbp]
 \caption{confusion matrix for the FERA training dataset using LER+SER.
@@ -420,7 +482,6 @@ As seen from Table~\ref{table:comp}, the performance using EAI representation~\c
 \begin{center}
 \label{table:mat_fera}
 \begin{tabular}{c|c|ccccc}
-
 &\multicolumn{6}{c}{True Label} \\ \hline
 \multirow{6}{*}{\begin{sideways}Prediction\end{sideways}} && An & Fe & Jo & Re & Sa \\ \cline{2-7}
 &An				&\textbf{62.1} &13.2  &4.8  &3.6  &   \\ \cline{2-2}
@@ -434,7 +495,7 @@ As seen from Table~\ref{table:comp}, the performance using EAI representation~\c
 \end{center}
 \end{table}
 
-Notice that the performance of the EAI approach (i.e., $0.71$ shown in Table~\ref{table:comp} is inferior than that in the FERA challenge~\cite{Yang_SMCB12} (i.e., $0.75$ shown in Table~\ref{table:fera_team}). We believe that this is due to a smaller training size from our person-independent experiment setting. For validate our claim, we carried out a leave-one-subject-out cross validation with respect to different training sizes for various representations. For a specific size, we randomly select the training data to train a classifier. This experiment is repeated for 10 times at each training size, and the average classification rate is reported in Fig.~\ref{fig:effect_training_size}. As seen in Fig.~\ref{fig:effect_training_size}, the classification rate steadily raises as the training size increases in all three cases. This informs us that given more training data for same training subject pool, the algorithm has the potential for superior performance. Additionally, it is observed that the increase rate for LRE is boosted by SER, especially when training size is larger. This demonstrates that the SER indeed captures discriminative facial muscle motion for expression recognition. In the meantime, the performance of LRE+SER is not saturated as the training size reaches the maximum (130 in this experiment), suggesting a potential for better performance given more data.
+Notice that the performance of the EAI approach (\textit{i.e.}, $0.71$ shown in Table~\ref{table:comp} is inferior than that in the FERA challenge~\cite{Yang_SMCB12} (\textit{i.e.}, $0.75$ shown in Table~\ref{table:fera_team}). We believe that this is due to a smaller training size from our person-independent experiment setting. For validate our claim, we carried out a leave-one-subject-out cross validation with respect to different training sizes for various representations. For a specific size, we randomly select the training data to train a classifier. This experiment is repeated for 10 times at each training size, and the average classification rate is reported in Fig.~\ref{fig:effect_training_size}. As seen in Fig.~\ref{fig:effect_training_size}, the classification rate steadily raises as the training size increases in all three cases. This informs us that given more training data for same training subject pool, the algorithm has the potential for superior performance. Additionally, it is observed that the increase rate for LRE is boosted by SER, especially when training size is larger. This demonstrates that the SER indeed captures discriminative facial muscle motion for expression recognition. In the meantime, the performance of LRE+SER is not saturated as the training size reaches the maximum (130 in this experiment), suggesting a potential for better performance given more data.
 
 
 \begin{figure}[htbp]
