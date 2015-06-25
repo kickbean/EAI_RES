@@ -389,17 +389,11 @@ The FERA-GEMEP~\cite{FERA_data} is an uncontrolled facial expression dataset, \t
 
 The FERA challenge consists of a training and a test set. There are 7 subjects (3 males and 4 females) in the training set, and 6 subjects (3 males and 4 females) in the test set, 3 of which appears in training. The facial expression videos of both sets are provided, while only the ground truth label for the training set is available. Fig.~\ref{fig:rep_vs_id} provides a visualization of the mean LRE and SRE representations of sample expression videos of various subjects for all emotion categories in the FERA training set. The participants can use other publicly available data in addition to FERA training set for training. The predictions on the test set are submitted to the FERA organizer for an independent evaluation. Table~\ref{table:fera_team} shows the challenge participants\footnote{\label{teams}Teams are ranked based on the FERA Challenge person-independent test. \textbf{UCR}: University of California at Riverside; \textbf{UCSD-CERT}: University of California at San Diego; \textbf{UIUC-UMC}: University of Illinois at Urbana-Champaign; University of Missouri; \textbf{KIT}: Karlsruhe Institute of Technology; \textbf{ANU}: Australian National University; \textbf{NUS}: National University of Singapore; \textbf{QUT-CMU}: Queensland University of Technology; Carnegie Mellon University; \textbf{UCL}: University College London; \textbf{UMont.}: University of Montreal;  \textbf{MIT-Cambridge}: Massachusetts Institute of Technology; University of Cambridge.} and the corresponding person-independent test results. 
 
-Since the ground truth label is only available for the FERA training set, we evaluate our algorithm using this set. We carried out leave-one-subject-out cross validation using both static and dynamic features extracted from the LREs and SREs individually as well as their combinations, the results of which are shown Table~\ref{table:comp}. In addition, we report the results of the best performing approach~\cite{Yang_SMCB12} in FERA challenge as a baseline comparison. We should stress that unlike most of the other methods which uses additional training data, only this work and~\cite{Yang_SMCB12} solely uses the FERA training set. 
+Since the ground truth label is only available for the FERA training set, we evaluate our algorithm using this set. We carried out leave-one-subject-out cross validation using both static and dynamic features extracted from the LREs and SREs individually as well as their combinations, the results of which from LBP and LPQ variants are shown in Table~\ref{table:comp_lbp} and Table~\ref{table:comp_lpq}, respectively. The symbol ``-'' means a particular module is not used for feature extraction. In addition, we report the results of the best performing approach~\cite{Yang_SMCB12} in FERA challenge as a baseline comparison. We should stress that unlike most of the other methods which uses additional training data, only this work and~\cite{Yang_SMCB12} solely uses the FERA training set. 
 
+Several interesting findings can be observed from the results in both Table~\ref{table:comp_lbp} and Table~\ref{table:comp_lpq}. First, the performance using static features on LRE only is on par with the EAI representation in~\cite{Yang_SMCB12}, $0.68$ for LBP and $0.7$ for LPQ. This is congruent with our qualitative analysis in Section~\ref{sec:eai} such that EAI and mean LRE has very similar appearance. Second, when considering single module performance, LRE results are consistently higher than SER ones (for both static and dynamic feature using both LBP and LPQ), which means LREs are more discriminative than SERs. This shows that, if only single module is considered, global structure of a facial expression is more informative than its local muscle motion. Third, combining both module almost always improves the recognition performance. For example, in Table~\ref{table:comp_lpq}, single module performances for LRE and SER are $0.7$ and $0.62$, respectively. Combining both modules improves the performance to $0.75$, which demonstrates the information captured by both modules complement each other. It also shows facial expression sequence are more informative than static expression images by exploiting the local muscle motion. Fourth, incorporating dynamic features further improves the performance. The best performance is generated when dynamic features are extracted from both the LRE and SER modules (in Table~\ref{table:comp_lbp} and Table~\ref{table:comp_lpq}). This informs us that the person-independent modeling is an effective strategy that not only diminishes the person-specific information to alleviate over-fitting, but also provides a reasonable manner for dynamic feature extraction. 
 
-Table~\ref{table:comp} shows the person-independent experimental results comparison. 
-
-1. LRE by itself is more informative than SER
-2. dynamic helps
-
-
-
-As seen from Table~\ref{table:comp}, the performance using EAI representation~\cite{Yang_SMCB12} is on par with the LRE representation. This quantitative result is congruent with our qualitative analysis in Section~\ref{sec:eai} that EAI and LRE has very similar appearance. The combination of LRE and SRE consistently outperforms other approaches, and the gain over LRE is around $10\%$ with the extra information captured in SRE. The LPQ texture description has a slightly better performance over the LBP and \textcolor[rgb]{1,0,0}{Gabor} features. The confusion matrix for the best performance setting, \textit{i.e.}, LRE+SER with LPQ, is provided in Table.~\ref{table:mat_fera}. If mentioned otherwise, the following analysis are using the best performing LPQ feature. 
+The confusion matrix for the best-performance setting, \textit{i.e.}, LRE+SER with TOP-LPQ, is tabulated in Table.~\ref{table:mat_fera}. \textit{Anger} and \textit{Fear} are misclassified to each other more often because the global structure of these two expressions are more similar compared with other expressions. As seen in~\cite{Valstar12}, \textit{Fear} is indeed the most challenging case for the FERA-GEMEP dataset. However, incorporating local muscle dynamics helps better characterizing the \textit{Fear} expression. 
 
 \begin{table}
 \caption{The rank of person-independent test in FERA Challenge\label{table:fera_team}}
@@ -446,10 +440,10 @@ As seen from Table~\ref{table:comp}, the performance using EAI representation~\c
 \toprule
 LRE & SER & Accuracy	& LRE	& SER	& Accuracy \\ \midrule 
 LBP	& -		& 0.68	& - & LBP & 0.6 \\
-TOP-LBP & - & 0.66 & - & TOP-LBP & 0.62 \\
+TOP-LBP & - & 0.67 & - & TOP-LBP & 0.62 \\
 LBP & LBP & 0.7 & LBP & TOP-LBP & 0.72 \\
 TOP-LBP & LBP & 0.7 & TOP-LBP & TOP-LBP & \textbf{0.73} \\ \midrule
-\multicolumn{2}{l}{UCR~\cite{Yang_SMCB12}: LBP} & 0.68 & \multicolumn{2}{l}{UCR~\cite{Yang_SMCB12}: TOP-LBP} & 0.67 \\
+\multicolumn{2}{l}{UCR~\cite{Yang_SMCB12}: LBP} & 0.68 & \multicolumn{2}{l}{UCR~\cite{Yang_SMCB12}: TOP-LBP} & 0.69 \\
 \bottomrule
 
 \end{tabular}
@@ -467,7 +461,7 @@ LPQ	& -		& 0.7	& - & LPQ & 0.62 \\
 TOP-LPQ & - & 0.72 & - & TOP-LPQ & 0.65 \\
 LPQ & LPQ & 0.75 & LPQ & TOP-LPQ & 0.77 \\
 TOP-LPQ & LPQ & 0.76 & TOP-LPQ & TOP-LPQ & \textbf{0.78} \\ \midrule
-\multicolumn{2}{l}{UCR~\cite{Yang_SMCB12}: LPQ} & 0.71 & \multicolumn{2}{l}{UCR~\cite{Yang_SMCB12}: TOP-LPQ} & 0.69 \\
+\multicolumn{2}{l}{UCR~\cite{Yang_SMCB12}: LPQ} & 0.7 & \multicolumn{2}{l}{UCR~\cite{Yang_SMCB12}: TOP-LPQ} & 0.73 \\
 \bottomrule
 
 \end{tabular}
@@ -482,37 +476,39 @@ TOP-LPQ & LPQ & 0.76 & TOP-LPQ & TOP-LPQ & \textbf{0.78} \\ \midrule
 \begin{center}
 \label{table:mat_fera}
 \begin{tabular}{c|c|ccccc}
-&\multicolumn{6}{c}{True Label} \\ \hline
-\multirow{6}{*}{\begin{sideways}Prediction\end{sideways}} && An & Fe & Jo & Re & Sa \\ \cline{2-7}
+\multicolumn{7}{c}{True Label} \\ \cline{2-7}
+\multirow{7}{*}{\begin{sideways}Prediction\end{sideways}} && An & Fe & Jo & Re & Sa \\ \cline{2-7}
 &An				&\textbf{62.1} &13.2  &4.8  &3.6  &   \\ \cline{2-2}
-&Co       &16.4  &\textbf{71.4}  &3.2   &1.8   & \\ \cline{2-2}
-&Di       &7.5  &5.5   &\textbf{85.5} &3.6  &    \\ \cline{2-2}
-&Fe       &5.8   &1.8   &4.8   &\textbf{78.4} &8.6    \\ \cline{2-2}
-&Ha       &8.2   &8.1   &1.6  &12.5 &\textbf{91.4}  \\ \cline{2-2}\hline
+&Fe       &16.4  &\textbf{71.4}  &3.2   &1.8   & \\ \cline{2-2}
+&Jo       &7.5  &5.5   &\textbf{85.5} &3.6  &    \\ \cline{2-2}
+&Re       &5.8   &1.8   &4.8   &\textbf{78.4} &8.6    \\ \cline{2-2}
+&Sa       &8.2   &8.1   &1.6  &12.5 &\textbf{91.4}  \\ \cline{2-2}\hline
 \multicolumn{2}{c|}{Average rate} &\multicolumn{5}{c}{\textbf{77.8}} \\
 
 \end{tabular}
 \end{center}
 \end{table}
 
-Notice that the performance of the EAI approach (\textit{i.e.}, $0.71$ shown in Table~\ref{table:comp} is inferior than that in the FERA challenge~\cite{Yang_SMCB12} (\textit{i.e.}, $0.75$ shown in Table~\ref{table:fera_team}). We believe that this is due to a smaller training size from our person-independent experiment setting. For validate our claim, we carried out a leave-one-subject-out cross validation with respect to different training sizes for various representations. For a specific size, we randomly select the training data to train a classifier. This experiment is repeated for 10 times at each training size, and the average classification rate is reported in Fig.~\ref{fig:effect_training_size}. As seen in Fig.~\ref{fig:effect_training_size}, the classification rate steadily raises as the training size increases in all three cases. This informs us that given more training data for same training subject pool, the algorithm has the potential for superior performance. Additionally, it is observed that the increase rate for LRE is boosted by SER, especially when training size is larger. This demonstrates that the SER indeed captures discriminative facial muscle motion for expression recognition. In the meantime, the performance of LRE+SER is not saturated as the training size reaches the maximum (130 in this experiment), suggesting a potential for better performance given more data.
+
+To dig deeper to our approach, we carry out more diagnostic experiments and analysis. If mentioned otherwise, the following analyses all use this best-performing setting. 
+
+\textbf{The effect of Training Size with a fixed subject pool: } We observe that the performance of the EAI approach (\textit{i.e.}, $0.7$ shown in Table~\ref{table:comp_lpq} is inferior than that in the FERA challenge~\cite{Yang_SMCB12} (\textit{i.e.}, $0.75$ shown in Table~\ref{table:fera_team}). We believe that this is due to a smaller training size from our person-independent experiment setting. For validation, we carried out a leave-one-subject-out cross validation with respect to different training sizes for various representations. For a specific size, we randomly select the training data according to person-independent constraint from the subject pool to train a classifier. This experiment is repeated for 10 times at each training size, and the average classification rate is reported in Fig.~\ref{fig:effect_training_size}. As seen in Fig.~\ref{fig:effect_training_size}, the classification rate steadily raises as the training size increases for all three curves. This informs us that given more training data for same training subject pool, the algorithm performance increases. Additionally, it is observed that the increase rate for LRE is boosted by SER, especially when training size becomes larger. This demonstrates that the SER indeed captures more discriminative facial muscle motion for expression recognition. In the meantime, the performance of LRE+SER is not saturated as the training size reaches the maximum (130 in this experiment), suggesting a potential for better performance given more data.
 
 
 \begin{figure}[htbp]
 	\centering
-		\includegraphics[width=.7\columnwidth]{pics/effect_training_size.png}
-	\caption{The person-independent recognition accuracy trend with various training size. The performance of LRE is spurred by the additional information captured in SER, and it has the potential for superior performance as the number of training increases. }
+		\includegraphics[width=.8\columnwidth]{pics/effect_training_size.png}
+	\caption{The person-independent recognition accuracy trend with various training size. The feature in use is TOP-LPQ. The performance of LRE is spurred by the additional information captured in SER, and it has the potential for superior performance as the number of training increases.}
 	\label{fig:effect_training_size}
 \end{figure}
 
-
-Under a person-independent setting, it is also interesting to discover the impact of the number of subjects in training. Thus, for each leave-one-subject-out test using LRE+SER, we vary the number of subjects in training, $k$, from 1 to 6 (since there are 7 subjects in the dataset), and conduct the test for ${6 \choose k}$ times. For example, when 2 subjects are in the training, there can be ${6 \choose 2}=15$ possible combinations of subjects, we record the test results for all combinations. As illustrated in Fig.~\ref{fig:effect_people_num}, a boxplot shows an increasing trend for classification accuracy as the number of subjects in training increases. This shows that the performance is likely to be improved as the number of training subjects enlarges. Additionally, Fig.~\ref{fig:effect_people_num} also shows a decreasing trend of the classification accuracy variance, suggesting that the performance becomes more stable as the number of training subjects increases. 
+\textbf{The size of Subject Pool: } under a person-independent setting, it is also interesting to discover the impact of the number of subjects in training. Thus, for each leave-one-subject-out test using LRE+SER, we vary the number of subjects in training, $k$, from 1 to 6 (since there are 7 subjects in the dataset), and conduct the test for ${6 \choose k}$ times. For example, when 2 subjects are in the training, there can be ${6 \choose 2}=15$ possible combinations of subjects, we record the test results for all combinations. As illustrated in Fig.~\ref{fig:effect_people_num}, a boxplot shows an increasing trend for classification accuracy as the number of subjects in training increases. This shows that the performance is likely to be improved as the number of training subjects enlarges. Additionally, the decreasing variance of the classification accuracy can be observed from Fig.~\ref{fig:effect_people_num}, suggesting a more stable performance as the number of training subjects pool increases. 
 
 
 \begin{figure}[htbp]
 	\centering
 		\includegraphics[width=.65\columnwidth]{pics/effect_people_num.png}
-	\caption{The boxplot of person-independent recognition accuracy using LRE+SER with various number of people in the training set. The performance at the second quartile are connected to illustrate the trend. The performance increases and becomes more stable when the number of training subjects enlarges.}
+	\caption{The boxplot of person-independent recognition accuracy using LRE+SER and TOP-LPQ with various number of people in the training set. The mean performance at the second quartile are connected to illustrate the trend. In general, the performance increases and becomes more stable when the number of training subjects pool enlarges.}
 	\label{fig:effect_people_num}
 \end{figure}
 
@@ -520,7 +516,7 @@ Under a person-independent setting, it is also interesting to discover the impac
 
 \subsection{Controlled Data: CK+ dataset}
 
-The Extended Cohn-Kanade dataset (CK+)~\cite{CKplus} is a facial expression dataset that has 7 categories of expressions, namely, \textit{Anger}, \textit{Contempt}, \textit{Disgust}, \textit{Fear}, \textit{Happy}, \textit{Sadness}, and \textit{Surprise}. This is a controlled dataset since the subjects controlled their head pose on purpose, and the expression displayed always follows the ``neutral-onset-apex" pattern. These conscious control may not only hide the true muscle contraction of an expression, but also changes the expression dynamics~\cite{Bartlett03}\cite{Ekman2005}. Although the philosophy of our algorithm is not designed for this fully controlled data, for the sake of completeness of a study, we also carry out person-independent tests and evaluate our LRE+SER representation together with LPQ feature descriptor on 316 sequences from 123 subjects in this dataset.
+The Extended Cohn-Kanade dataset (CK+)~\cite{CKplus} is a facial expression dataset that has 7 categories of expressions, namely, \textit{Anger}, \textit{Contempt}, \textit{Disgust}, \textit{Fear}, \textit{Happy}, \textit{Sadness}, and \textit{Surprise}. This is a controlled dataset since the subjects controlled their head pose on purpose, and the expression displayed always follows the ``neutral-onset-apex" pattern. These conscious control may not only hide the true muscle contraction of an expression, but also changes the expression dynamics~\cite{Bartlett03}\cite{Ekman2005}. Although the philosophy of our algorithm is not designed for this fully controlled data, for the sake of completeness of a study, we also carry out person-independent tests and evaluate our LRE+SER representation together with the static LPQ feature descriptor on 316 sequences from 123 subjects in this dataset. The static LPQ is chosen for a better comparison with the literature. 
 
 \begin{table}[htbp]
 \caption{confusion matrix for CK+ dataset using LER+SER.
@@ -529,7 +525,7 @@ The Extended Cohn-Kanade dataset (CK+)~\cite{CKplus} is a facial expression data
 \label{table:CK_result}
 \begin{tabular}{c|c|ccccccc}
 
-&\multicolumn{8}{c}{True Label} \\ \hline
+\multicolumn{9}{c}{True Label} \\ \cline{2-9}
 \multirow{8}{*}{\begin{sideways}Prediction\end{sideways}} && An & Co & Di & Fe & Ha & Sa & Su \\ \cline{2-9}
 &An          &\textbf{75} &22.2  &1.8  &8  &  &25.9 &  \\ \cline{2-2}
 &Co       &2.3  &\textbf{72.2}  &   &   &  &3.7  &1.2 \\ \cline{2-2}
@@ -545,29 +541,31 @@ The Extended Cohn-Kanade dataset (CK+)~\cite{CKplus} is a facial expression data
 \end{table}
 
 
-As seen in Table~\ref{table:CK_result}, the LRE+SER representation achieves $85.1\%$ accuracy on average, outperforming $82.6\%$ by the EAI representation~\cite{Yang_SMCB12}. Once again, this demonstrates that the information captured by the SER improves the expression recognition accuracy. The algorithm~\cite{Zhao_PAMI07} using the same dynamic texture feature, LBP-TOP, has a better performance on CK+ dataset. We believe it is because the experiment in~\cite{Zhao_PAMI07} are designed as 10-fold cross validation. Although there is no subject that displays the same expression twice in CK+, this experiment setting does not strictly guarantee no test subject in training. On the contrary, our experimental design is person-independent.
+As seen in Table~\ref{table:CK_result}, the LRE+SER representation achieves $85.1\%$ accuracy on average, outperforming $82.6\%$ by the EAI representation~\cite{Yang_SMCB12}. Once again, this demonstrates that the information captured by the SER improves the expression recognition accuracy. The algorithm~\cite{Zhao_PAMI07} using the same dynamic texture feature, LBP-TOP, has a better performance on CK+ dataset. We believe it is because the experiment in~\cite{Zhao_PAMI07} are designed as 10-fold cross validation. Although there is no subject that displays the same expression twice in CK+, this experiment setting does not strictly guarantee no test subject in training. On the contrary, our experimental design is strictly person-independent.
 
-Besides, the CK+ data has only one or a few apex expression for each ``neutral-onset-apex" sequence. This unrealistic setting reduces the intensity of the expression captured by LRE, which appears to be more neutral compared with the LRE of FERA-GEMEP data. Fig.~\ref{fig:ck_eai} shows a visualization of LRE representations for sample sequences from the CK+ dataset. 
+Besides, the CK+ data has only one or a few apex expression for each ``neutral-onset-apex" sequence. This unrealistic setting reduces the intensity of the expression captured by LREs, which appears to be more neutral compared with the mean LRE of FERA-GEMEP data. Fig.~\ref{fig:ck_eai} shows a visualization of mean LRE representations for sample sequences from the CK+ dataset. 
 
-In addition, through a diagnostic experiment, we have found that the classification performance is correlated with the training size for each class category, shown in Fig.~\ref{fig:fig_ck_size}. We plot the classification accuracy along with the training size for each category in Fig.~\ref{fig:fig_ck_size}. The categories such as Disgust, Happy, and Surprise, which have more data in training, have a much higher accuracy. This also shows the potential of improvement for our algorithm given more training data. 
+In addition, through a diagnostic experiment, we have found that the classification performance has a strong correlation with the training size for each class category, shown in Fig.~\ref{fig:fig_ck_size}. We plot the classification accuracy along with the training size for each category in Fig.~\ref{fig:fig_ck_size}. The categories such as Disgust, Happy, and Surprise, which have more data in training, have a much higher accuracy. This also shows the potential of improvement for our algorithm given more training sample for the under-performing categories. 
 
 \begin{figure}[htbp]
 	\centering
 		\includegraphics[width=.7\columnwidth]{pics/ck_eai.png}
-	\caption{Sample Low-rank Expression representations for the CK+ dataset. The lower right grid shows the Avatar Reference generated from~\cite{Yang_SMCB12}. Although the person-specific information is attenuated as the appearance of different subject looks similar, the representative expression information is also difficult to be distinguished. They appear to be more neutral compared with the LRE representation in FERA-GEMEP dataset in Fig.~\ref{fig:lre_vs_id}.}
+	\caption{Sample mean LRE representations for the CK+ dataset. The lower right grid shows the Avatar Reference generated from~\cite{Yang_SMCB12}. Although the person-specific information is attenuated as the appearance of different subjects visually resemble each other, the discriminative expression information is hidden and difficult to be distinguished. In general, they appear to be more ``neutral'' compared with the mean LRE representations of sequences in FERA-GEMEP dataset in Fig.~\ref{fig:lre_vs_id}.}
 	\label{fig:ck_eai}
 \end{figure}
 
 \begin{figure}[htbp]
 	\centering
 		\includegraphics[width=.8\columnwidth]{pics/fig_ck_size.png}
-	\caption{Relation between the classification accuracy and the training size for each category. The accuracy is generally higher for categories with more training data.}
+	\caption{Relation between the classification accuracy and the training size for each expression category. The accuracy is generally higher for categories with more training data.}
 	\label{fig:fig_ck_size}
 \end{figure}
 
 
 
 \section{Conclusions\label{sec:conclude}}
+We have proposed a low-rank sparse recovery framework to effectively extract dynamic muscle motion for person-independent facial expression recognition. Our approach decomposes a facial expression sequence into two representations, namely the Low-rank Expression (LRE) and the Sparse Expression Residual (SER). The LRE recovers the underline expression appearance shared the entire expression sequence while SER captures the local muscle motion. The LRE and SER complement each other for a better expression recognition performance. In addition, our approach has the potential of improvement given more training samples and larger training subject instances. 
+
 
 % Can use something like this to put references on a page
 % by themselves when using endfloat and the captionsoff option.
