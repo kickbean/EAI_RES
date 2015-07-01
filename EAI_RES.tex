@@ -102,11 +102,15 @@
 % was not built to handle multiple paragraphs
 %
 
-\author{XX,~\IEEEmembership{Member,~IEEE,}
-				YY~\IEEEmembership{Member,~IEEE}% <-this % stops a space
-\thanks{\IEEEcompsocthanksitem Acknowledgment: \IEEEcompsocthanksitem 
-
-}}
+\author{Songfan~Yang,~\IEEEmembership{Member,~IEEE,}
+				Le~An,~\IEEEmembership{Member,~IEEE,}
+        and~Bir~Bhanu,~\IEEEmembership{Fellow,~IEEE}% <-this % stops a space
+\IEEEcompsocitemizethanks{\IEEEcompsocthanksitem Acknowledgment: \IEEEcompsocthanksitem \protect\\ S.~Yang is with the College of Electronics and Information Engineering at Sichuan University, Chengdu, China 610064. E-mail: syang@scu.edu.cn \protect\\
+L.~An is with BRIC, University of North Carolina at Chapel Hill, Chapel
+Hill, NC 27599 USA. E-mail: lan004@unc.edu \protect\\
+B.~Bhanu is with the Center for Research in Intelligent Systems, University of California, Riverside, CA 92521 USA. E-mail: bhanu@ee.ucr.edu \protect\\
+}% <-this % stops a space
+\thanks{}}
 
 
 % The paper headers
@@ -149,7 +153,7 @@ Facial expression recognition, person-independent, low-rank expression, sparse e
 
 \IEEEPARstart{A}{ffective} computing has been attracting an increasing amount of attentions in both psychology and computer science studies~\cite{Picard03}. As a primary channel to convey emotion, facial expression contains rich information and has been extensively studied~\cite{Pantic_PAMI00,Torre11}. Although a rich body of research on facial expression recognition in controlled environments was conducted~\cite{Torre11}, a recent expression analysis challenge~\cite{FERA11} indicates that person-independent expression recognition in video remains a difficult problem in uncontrolled settings, due to the following reasons:
 
-\begin{figure}[htbp]
+\begin{figure}[t]
 	\centering
 		\includegraphics[width=.95\columnwidth]{pics/splash.png}
 	\caption{The overview of our approach. We observe that: 1) a facial expression sequence possess an inherent \textit{global} model (\textit{e.g.}, lip corner expansion for \textit{Happiness} in this case); and 2) each frame has its own \textit{local} properties (\textit{e.g.}, various muscle motion intensities), which describe the facial dynamics. Due to the face anatomy constraints~\cite{Ekman78}, the muscle motion that characterize the local deformation is sparsely distributed. Inspired by these observations, we model each frame as 1) a low-rank expression (LRE) that represents the global expression appearance jointly estimated from the entire sequence; and 2) an additive sparse expression residual (SER) that represents the deviations from the low-rank structure. Moreover, the person-independent factor is modeled as a transformation with respect to a canonical space (reference face), avoiding over-fitting for classification. Both LRE and SER provide viable manners to extract meaningful facial expression dynamics, yielding superior recognition performances. To appreciate the information captured by the LRE and SER representations, the bottom row shows the mean representation of the decomposed sequence. The mean LRE retains the global appearance and the mean SER captures the local motion around mouth and eye areas.}
@@ -223,7 +227,7 @@ where $\|\cdot\|_0$ is the $\ell_0$ norm counting the number of non-zero entries
 \begin{equation}
 \min_{\A,\E} \|\A\|_*+\gamma \|\E\|_1,  \quad \text{s.t.} \quad \D = \A + \E, 
 \end{equation}
-where $\|\cdot\|_*$ is the nuclear norm that computes the sum of all singular values of $\A$. $\|\E\|_1=\sum_{ij}|\E_{ij}|$ is the $\ell_1$ norm of $\E$. This new objective is then convex and can be solve by \textcolor[rgb]{1,0,0}{Singlular Value Thresholding (SVT) [] -check if this is right}. 
+where $\|\cdot\|_*$ is the nuclear norm that computes the sum of all singular values of $\A$. $\|\E\|_1=\sum_{ij}|\E_{ij}|$ is the $\ell_1$ norm of $\E$. This new objective is then convex and can be solve by an efficient first-order accelerated proximal gradient algorithm~\cite{Lin09}\cite{Beck09}. 
 
 
 \subsection{Reference-based Person-Independent Transformation} 
@@ -394,17 +398,17 @@ In the following sections, we report results of various combinations of static a
 
 The FERA-GEMEP~\cite{FERA_data} is an uncontrolled facial expression dataset, \textit{i.e.}, in the process of data collection, subjects are asked to convey one of the following five emotions at a time: \textit{Anger}, \textit{Fear}, \textit{Joy}, \textit{Relief}, and \textit{Sadness}, without any control of their head or body movement. Each video segment contains one subject displaying expressions that correspond to one emotion. The average video length is about 2 seconds with 30 frames per second (FPS). Most subjects are uttering some meaningless phrases while displaying expressions, and there are 3 to 5 videos for each subject with the same emotion. All experiments in this paper are designed to be \textit{person-independent} (i.e., no testing subject is included in the training set), in order to validate the generalization ability of the proposed algorithm. 
 
-The original FERA-GEMEP data contains a training and a test set, where there are 7 subjects (3 males and 4 females) in training, and 6 subjects (3 males and 3 females) in the test set. The facial expression videos of both sets are provided and the expression label is only available for the training set. The participants can use other publicly available data in addition to FERA training set for training. The predictions on the test set are submitted to the FERA organizer for an independent evaluation. Table~\ref{table:fera_team} shows the challenge participants\footnote{\label{teams}Teams are ranked based on the FERA Challenge person-independent test. \textbf{UCR}: University of California at Riverside; \textbf{UCSD-CERT}: University of California at San Diego; \textbf{UIUC-UMC}: University of Illinois at Urbana-Champaign; University of Missouri; \textbf{KIT}: Karlsruhe Institute of Technology; \textbf{ANU}: Australian National University; \textbf{NUS}: National University of Singapore; \textbf{QUT-CMU}: Queensland University of Technology; Carnegie Mellon University; \textbf{UCL}: University College London; \textbf{UMont.}: University of Montreal;  \textbf{MIT-Cambridge}: Massachusetts Institute of Technology; University of Cambridge.} and the corresponding person-independent test results. }
+The original FERA-GEMEP data contains a training and a test set, where there are 7 subjects (3 males and 4 females) in training, and 6 subjects (3 males and 3 females) in the test set. The facial expression videos of both sets are provided and the expression label is only available for the training set. The participants can use other publicly available data in addition to FERA training set for training. The predictions on the test set are submitted to the FERA organizer for an independent evaluation. Table~\ref{table:fera_team} shows the challenge participants\footnote{\label{teams}Teams are ranked based on the FERA Challenge person-independent test. \textbf{UCR}: University of California at Riverside; \textbf{UCSD-CERT}: University of California at San Diego; \textbf{UIUC-UMC}: University of Illinois at Urbana-Champaign; University of Missouri; \textbf{KIT}: Karlsruhe Institute of Technology; \textbf{ANU}: Australian National University; \textbf{NUS}: National University of Singapore; \textbf{QUT-CMU}: Queensland University of Technology; Carnegie Mellon University; \textbf{UCL}: University College London; \textbf{UMont.}: University of Montreal;  \textbf{MIT-Cambridge}: Massachusetts Institute of Technology; University of Cambridge.} and the corresponding person-independent test results.
 
 
-Since the ground truth labels are only available for the training set, we evaluate our algorithm using this set. We carried out leave-one-subject-out cross validation using both static and dynamic features extracted from the LREs and SREs and these features are evaluated both individually and jointly. Fig.~\ref{fig:rep_vs_id} provides a visualization of the mean LRE and SRE representations of sample expression videos of various subjects for all emotion categories in the training set. The classification results are shown in Table~\ref{table:comp_lbp} and Table~\ref{table:comp_lpq}, respectively. The symbol ``--'' means a particular module is not used for feature extraction. In addition, we report the results of the best performing approach~\cite{Yang_SMCB12} in FERA challenge as a baseline comparison. We should address that unlike most of the other methods which use additional training data, this work and~\cite{Yang_SMCB12} solely rely on the FERA training set. 
+Since the ground truth labels are only available for the training set, we evaluate our algorithm using this set. Although protocol changes slightly due to the lack of test set label, we implement the best performing algorithm in FERA Challenge, i.e. EAI~\cite{Yang_SMCB12}, under the protocol of this paper. We carried out leave-one-subject-out cross validation using both static and dynamic features extracted from the LREs and SREs and these features are evaluated both individually and jointly. Fig.~\ref{fig:rep_vs_id} provides a visualization of the mean LRE and SRE representations of sample expression videos of various subjects for all emotion categories in the training set. The classification results are shown in Table~\ref{table:comp_lbp} and Table~\ref{table:comp_lpq}, respectively. The symbol ``--'' means a particular module is not used for feature extraction. In addition, we report the results of the best performing approach~\cite{Yang_SMCB12} in FERA challenge as a baseline comparison. We should address that unlike most of the other methods which use additional training data, this work and~\cite{Yang_SMCB12} solely rely on the FERA training set. 
 
 Several interesting findings can be observed from the results in Table~\ref{table:comp_lbp} and Table~\ref{table:comp_lpq}. \textit{First}, the performance using static features on LRE only is on par with the EAI representation in~\cite{Yang_SMCB12}, $0.68$ for LBP and $0.7$ for LPQ. This is congruent with our qualitative analysis in Section~\ref{sec:eai} such that EAI and mean LRE has very similar appearance. \textit{Second}, when considering single module performance, LRE results are consistently higher than SER ones (for both static and dynamic feature using both LBP and LPQ), which means LREs are more discriminative than SERs. This shows that if only single module is to be considered, global structure of a facial expression is more informative than its local muscle motion. \textit{Third}, combining both module almost always improves the recognition performance. For example, in Table~\ref{table:comp_lpq}, single module performances for LRE and SER using LPQ features are $0.7$ and $0.62$, respectively. Combining both modules improves the accuracy to $0.75$, which demonstrates that the information captured by both modules complements each other and improved results are obtained by exploiting the local muscle motion. \textit{Fourth}, incorporating dynamic features further improves the performance. The best performance is achieved when dynamic features are extracted from both the LRE and SER modules. This informs us that the person-independent modeling is an effective strategy, which not only diminishes the person-specific information, but also provides a reasonable means for dynamic feature extraction. 
 
-The confusion matrix for the best-performance setting, \textit{i.e.}, LRE+SER with TOP-LPQ, is tabulated in Table.~\ref{table:mat_fera}. \textit{Anger} and \textit{Fear} are misclassified to each other more often because the global structure of these two expressions are more similar compared with other expressions \textcolor[rgb]{1,0,0}{can you show some image?} \songfan{OK, I will find something}. As shown in~\cite{Valstar12}, \textit{Fear} is indeed the most challenging case for this dataset. However, incorporating local muscle dynamics helps better characterizing the \textit{Fear} expression. 
+The confusion matrix for the best-performance setting, \textit{i.e.}, LRE+SER with TOP-LPQ, is tabulated in Table.~\ref{table:mat_fera}. \textit{Anger} and \textit{Fear} are misclassified to each other more often because the global structure of these two expressions are more similar compared with other expressions. This is qualitatively demonstrated in Fig.~\ref{fig:lre_vs_id}, where the appearance of the first two rows resemble each other more than other rows. It is also shown in~\cite{Valstar12} that \textit{Fear} is indeed the most challenging case for this dataset. However, incorporating local muscle dynamics helps better characterizing the \textit{Fear} expression. 
 
 \begin{table}
-\caption{\textcolor[rgb]{1,0,0}{This table looks ugly...}\songfan{Please help improve it}The rank of person-independent test in FERA Challenge~\cite{Valstar12}\label{table:fera_team}}
+\caption{The rank of person-independent test in FERA Challenge~\cite{Valstar12}\label{table:fera_team}}
 \centering
 \begin{tabular}{ll}
 \toprule
@@ -444,7 +448,7 @@ The confusion matrix for the best-performance setting, \textit{i.e.}, LRE+SER wi
 \caption{Classification accuracy on FERA-GEMEP dataset using LBP\label{table:comp_lbp}}
 \centering
 \scriptsize
-\begin{tabular}{lll||lll}
+\begin{tabular}{l|l|l||l|l|l}
 \toprule
 LRE & SER & Accuracy	& LRE	& SER	& Accuracy \\ \midrule 
 LBP	& --		& 0.68	& -- & LBP & 0.6 \\
@@ -462,7 +466,7 @@ TOP-LBP & LBP & 0.7 & TOP-LBP & TOP-LBP & \textbf{0.73} \\ \midrule
 \caption{Classification accuracy on FERA-GEMEP dataset using LPQ\label{table:comp_lpq}}
 \centering
 \scriptsize
-\begin{tabular}{lll||lll}
+\begin{tabular}{l|l|l||l|l|l}
 \toprule
 LRE & SER & Accuracy	& LRE	& SER	& Accuracy \\ \midrule 
 LPQ	& --		& 0.7	& -- & LPQ & 0.62 \\
@@ -483,15 +487,15 @@ TOP-LPQ & LPQ & 0.76 & TOP-LPQ & TOP-LPQ & \textbf{0.78} \\ \midrule
 (An=Anger, Fe=Fear, Jo=Joy, Re=Relief, Sa=Sadness)}
 \begin{center}
 \label{table:mat_fera}
-\begin{tabular}{c|c|ccccc}
+\begin{tabular}{c|c|ccccc|}
 \multicolumn{7}{c}{True Label} \\ \cline{2-7}
 \multirow{7}{*}{\begin{sideways}Prediction\end{sideways}} && An & Fe & Jo & Re & Sa \\ \cline{2-7}
-&An				&\textbf{62.1} &13.2  &4.8  &3.6  &   \\ \cline{2-2}
-&Fe       &16.4  &\textbf{71.4}  &3.2   &1.8   & \\ \cline{2-2}
-&Jo       &7.5  &5.5   &\textbf{85.5} &3.6  &    \\ \cline{2-2}
-&Re       &5.8   &1.8   &4.8   &\textbf{78.4} &8.6    \\ \cline{2-2}
-&Sa       &8.2   &8.1   &1.6  &12.5 &\textbf{91.4}  \\ \cline{2-2}\hline
-\multicolumn{2}{c|}{Average rate} &\multicolumn{5}{c}{\textbf{77.8}} \\
+&An				&\textbf{62.1} &13.2  &4.8  &3.6  &   \\ 
+&Fe       &16.4  &\textbf{71.4}  &3.2   &1.8   & \\ 
+&Jo       &7.5  &5.5   &\textbf{85.5} &3.6  &    \\ 
+&Re       &5.8   &1.8   &4.8   &\textbf{78.4} &8.6    \\ 
+&Sa       &8.2   &8.1   &1.6  &12.5 &\textbf{91.4}  \\ \cline{2-7}
+&Average  &\multicolumn{5}{c|}{\textbf{77.8}} \\ \cline{2-7}
 
 \end{tabular}
 \end{center}
@@ -532,18 +536,18 @@ The Extended Cohn-Kanade dataset (CK+)~\cite{CKplus} is a facial expression data
 (An=Anger, Co=Contempt, Di=Disgust, Fe=Fear, Ha=Happy, Sa=Sadness, Su=Surprise)}
 \begin{center}
 \label{table:CK_result}
-\begin{tabular}{c|c|ccccccc}
+\begin{tabular}{c|c|ccccccc|}
 
 \multicolumn{9}{c}{True Label} \\ \cline{2-9}
 \multirow{8}{*}{\begin{sideways}Prediction\end{sideways}} && An & Co & Di & Fe & Ha & Sa & Su \\ \cline{2-9}
-&An          &\textbf{75} &22.2  &1.8  &8  &  &25.9 &  \\ \cline{2-2}
-&Co       &2.3  &\textbf{72.2}  &   &   &  &3.7  &1.2 \\ \cline{2-2}
-&Di        &4.5  &   &\textbf{94.6} &  &1.6 &3.7 &2.4  \\ \cline{2-2}
-&Fe           &2.3   &   &   &\textbf{68} &  &3.7  &1.2  \\ \cline{2-2}
-&Ha          &4.5   &   &1.8  &8 &\textbf{96.8} &  &  \\ \cline{2-2}
-&Sa        &9.1  &  &  &4   &  &\textbf{48.1} & \\ \cline{2-2}
-&Su       &2.3  &5.6 &1.8  &12 &1.6  &14.8 &\textbf{95.2} \\ \hline
-\multicolumn{2}{c|}{Average rate} &\multicolumn{7}{c}{\textbf{85.1}} \\
+&An          &\textbf{75} &22.2  &1.8  &8  &  &25.9 &  \\ 
+&Co       &2.3  &\textbf{72.2}  &   &   &  &3.7  &1.2 \\ 
+&Di        &4.5  &   &\textbf{94.6} &  &1.6 &3.7 &2.4  \\ 
+&Fe           &2.3   &   &   &\textbf{68} &  &3.7  &1.2  \\ 
+&Ha          &4.5   &   &1.8  &8 &\textbf{96.8} &  &  \\ 
+&Sa        &9.1  &  &  &4   &  &\textbf{48.1} & \\ 
+&Su       &2.3  &5.6 &1.8  &12 &1.6  &14.8 &\textbf{95.2} \\ \cline{2-9}
+&Average &\multicolumn{7}{c|}{\textbf{85.1}} \\ \cline{2-9}
 
 \end{tabular}
 \end{center}
@@ -586,9 +590,18 @@ We have proposed a low-rank sparse recovery framework to effectively extract dyn
 \bibliographystyle{IEEEtran}
 \bibliography{expression}
 
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{photo/songfan.jpg}}]{Songfan Yang}
+(S'10-M'14) received the B.S. degree in Electrical Engineering from Sichuan University, Chengdu, China, in 2009 and the M.S. and Ph.D. degree in Electrical Engineering from University of California, Riverside. He is currently an Associate Professor of College of Electronics and Information Engineering at Sichuan University. His research interests include computer vision, pattern recognition, and affective computing. He holds the Best Entry Award of the FG 2011 Facial Expression Recognition and Analysis emotion challenge (FERA) competition.
+\end{IEEEbiography}
+
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{photo/Lean.jpg}}]{Le An} received the B.Eng. degree in telecommunications engineering from Zhejiang University in China in 2006, the MSc degree in electrical engineering from Eindhoven University of Technology in Netherlands in 2008, and the PhD degree in electrical engineering from University of California, Riverside in USA in 2014. He is currently a postdoctoral research associate at University of North Carolina at Chapel Hill, USA.  
+His research interests include image processing, computer vision, pattern recognition, and machine learning. He received the best paper award from the 2013 IEEE International Conference on Advanced Video and Signal-Based Surveillance (AVSS).
+\end{IEEEbiography}
 
 
-
+\begin{IEEEbiography}[{\includegraphics[width=1in,height=1.25in,clip,keepaspectratio]{photo/bhanu}}]{Bir Bhanu}
+(S'72-M'82-SM'87-F'95) received the S.M. and E.E. degrees in Electrical Engineering and Computer Science from the Massachusetts Institute of Technology, Cambridge, MA, the Ph.D. degree in Electrical Engineering, from the Image Processing Institute at University of Southern California and the M.B.A. degree from the University of California, Irvine. He is the Distinguished Professor of Electrical Engineering and Cooperative Professor of Computer Science and Engineering, Mechanical Engineering and Bioengineering, and the Director of the Center for Research in Intelligent Systems (CRIS) and the Visualization and Intelligent Systems Laboratory (VISLab) at the University of California, Riverside (UCR). In addition, he serves as the director of NSF IGERT on Video Bioinformatics at UCR. Dr. Bhanu has been the Principal Investigator of various programs for NSF, DARPA, NASA, AFOSR, ONR, ARO, and other agencies and industries in the areas of video networks, video understanding, video bioinformatics, learning and vision, image understanding, pattern recognition, target recognition, biometrics, autonomous navigation, image databases, and machine-vision applications. He has published seven coauthored and three edited books. He is the holder of 18 (5 pending) patents. He has published more than 450 reviewed technical publications, including over 120 journal papers and 45 book chapters. His current research interests are Computer Vision, Pattern Recognition and Data Mining, Machine Learning, Artificial Intelligence, Image Processing, Image and Video Database, Graphics and Visualization, Robotics, Human-Computer Interactions, Biological, Medical, Military and Intelligence applications. He is Fellow of IEEE, AAAS, IAPR, and SPIE.
+\end{IEEEbiography}
 
 % that's all folks
 \end{document}
