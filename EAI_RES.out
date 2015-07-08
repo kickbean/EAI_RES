@@ -1,0 +1,16 @@
+\BOOKMARK [1][-]{section.1}{Introduction}{}% 1
+\BOOKMARK [1][-]{section.2}{Related Work and Our Contributions}{}% 2
+\BOOKMARK [2][-]{subsection.2.1}{Facial Expression Recognition}{section.2}% 3
+\BOOKMARK [2][-]{subsection.2.2}{Sparse Representation}{section.2}% 4
+\BOOKMARK [2][-]{subsection.2.3}{Our Contributions}{section.2}% 5
+\BOOKMARK [1][-]{section.3}{Person-independent Expression Modeling}{}% 6
+\BOOKMARK [2][-]{subsection.3.1}{The Generalized Model}{section.3}% 7
+\BOOKMARK [2][-]{subsection.3.2}{Reference-based Person-Independent Transformation}{section.3}% 8
+\BOOKMARK [2][-]{subsection.3.3}{Feature Extraction and Classification}{section.3}% 9
+\BOOKMARK [2][-]{subsection.3.4}{Relation to Emotion Avatar Image \(EAI\) }{section.3}% 10
+\BOOKMARK [1][-]{section.4}{Experimental Results}{}% 11
+\BOOKMARK [2][-]{subsection.4.1}{Experimental Setup}{section.4}% 12
+\BOOKMARK [2][-]{subsection.4.2}{Uncontrolled Data: FERA-GEMEP Dataset}{section.4}% 13
+\BOOKMARK [2][-]{subsection.4.3}{Controlled Data: CK+ dataset}{section.4}% 14
+\BOOKMARK [1][-]{section.5}{Conclusions}{}% 15
+\BOOKMARK [1][-]{section*.1}{References}{}% 16
