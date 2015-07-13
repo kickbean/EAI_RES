@@ -295,7 +295,7 @@ The aforementioned procedures are summarized in Algorithm~\ref{alg}. Parameters 
 
 \begin{algorithm}[htb]
     \caption{Low-Rank Expression Decomposition}
-    \textbf{Input:} Expression data matrix $D\in \mathbb{R}^{m\times n}$, SIFT-flow warping matrix $S\in \mathbb{R}^{m\times n}$, \textcolor[rgb]{1,0,0}{ where is this $\lambda$ in this algo?} \\
+    \textbf{Input:} Expression data matrix $D\in \mathbb{R}^{m\times n}$, SIFT-flow warping matrix $S\in \mathbb{R}^{m\times n}$\\
     \begin{algorithmic}[1]
 			\State{$\D^*=\D+\S$}
 			\State{$\A_0,\A_{-1}\leftarrow \0; \E_0,\E_{-1}\leftarrow \0; t_0,t_{-1}\leftarrow 1; \bar{\mu}\leftarrow \delta\mu_0$.}
@@ -311,7 +311,7 @@ The aforementioned procedures are summarized in Algorithm~\ref{alg}. Parameters 
 				\State{\textbf{step 3:} soft-thresholding:}
 				\State{ $(\U,\S,\V)\leftarrow $SVD$(\G^k_\A)$}
 				\State{ $\A_{k+1}\leftarrow \U\mathbb{T}_{\mu^k/\rho}(\S)\V^\top$;}
-				\State{ $\E_{k+1}\leftarrow \mathbb{T}_{\lambda\mu^k/\rho}(\G^k_\E)$;}
+				\State{ $\E_{k+1}\leftarrow \mathbb{T}_{\gamma\mu^k/\rho}(\G^k_\E)$;}
 				
 				\State{\textbf{step 4:} update:}
 				\State{ $t_{k+1}\leftarrow \frac{1+\sqrt{4t^2_k+1}}{2}$;}
@@ -585,8 +585,6 @@ In addition, through a diagnostic experiment, we have found that the classificat
 
 \section{Conclusions\label{sec:conclude}}
 We have proposed a low-rank sparse recovery framework to effectively extract dynamic muscle motion for unconstrained person-independent facial expression recognition in videos. Our approach decomposes a facial expression sequence into two representations, namely the Low-Rank Expression (LRE) and the Sparse Expression Residual (SER). The LRE recovers the underlying expression appearance shared in the entire expression sequence, while the SER captures the local muscle motion. The LRE and SER complement each other for a better expression recognition performance. Extensive experimental results have demonstrated the effectiveness of the proposed method and superior performance has been observed as compared to the state-of-the-art techniques. In addition, our approach has the potential of improvement given more training samples and larger training subject instances. 
-
-\textcolor[rgb]{1,0,0}{Some references are in abbreviation, some use full name, please unify.}
 
 % Can use something like this to put references on a page
 % by themselves when using endfloat and the captionsoff option.
