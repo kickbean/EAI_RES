@@ -90,7 +90,7 @@
 % paper title
 % can use linebreaks \\ within to get better formatting as desired
 % Do not put math or special symbols in the title.
-\title{Person-Independent Expression Recognition Using Low-Rank Expressions and Sparse Expression Residual}
+\title{Person-Independent Facial Expression  \\ Recognition Using Low-Rank Expression \\ and Sparse Expression Residual}
 %
 %
 % author names and IEEE memberships
@@ -107,8 +107,8 @@
 				Yinjie~Lei,~\IEEEmembership{Member,~IEEE,}
         and~Bir~Bhanu,~\IEEEmembership{Fellow,~IEEE}% <-this % stops a space
 \thanks{S.~Yang and Y.~Lei are with the College of Electronics and Information Engineering at Sichuan University, Chengdu, China 610064. E-mail: \{syang,~yinjie\}@scu.edu.cn}
-\thanks{L.~An is with BRIC, University of North Carolina at Chapel Hill, Chapel Hill, NC 27599 USA. E-mail: lan004@unc.edu}
-\thanks{B.~Bhanu is with the Center for Research in Intelligent Systems, University of California, Riverside, CA 92521 USA. E-mail: bhanu@ee.ucr.edu}
+\thanks{L.~An is the Department of Electrical and Computer Engineering, University of California, Riverside, CA 92521 USA. E-mail: lan004@ucr.edu}
+\thanks{B.~Bhanu is with the Center for Research in Intelligent Systems, University of California, Riverside, CA 92521 USA. E-mail: bhanu@cris.ucr.edu}
 }
 
 
@@ -122,7 +122,7 @@ IEEEtran.cls for Computer Society Journals}
 % As a general rule, do not put math, special symbols or citations
 % in the abstract or keywords.
 \begin{abstract}
-Person-independent expression recognition aims to recognize facial expressions of an \textit{unseen} subject. This remains a challenging problem due to that the facial muscle motion for a typical facial expression, which should be similar irrespective of the subject's identity, is difficult to quantify and generalize across population. Threfore, trained classifiers can easily over-fitted to person-specific facial appearances rather than to person-independent muscle motion from expressions. This problem becomes even more challenging when the rigid head motion and non-rigid facial muscle motion are observed in uncontrolled videos. To tackle these challenges, we model an expression video as a combination of two parts: 1) a set of low-rank components that represent person-independent expression prototypes, namely Low-Rank Expressions (LRE), and 2) a set of sparse appearance residuals that capture the muscle motion of individual frames in video, namely Sparse Expression Residuals (SER). To avoid over-fitting, we explicitly model the person-independent transformation of individual frames with respect to a canonical reference space, in terms of an objective function to be minimized. We show that this objective function can be simplified and solved by an efficient sparse low-rank recovery algorithm. A comparative study between the state-of-the-art models and the proposed LRE representation shows the merits of our approach in representing expressions in a person-independent manner. We also demonstrate that the SER can also be utilized to further improve the recognition performance, when both spatial and temporal texture features are extracted out of SER. Extensive qualitative and quantitative results demonstrate the superiority of our approach as compared to most recent methods.
+Person-independent expression recognition aims to recognize facial expressions of an \textit{unseen} subject. This remains a challenging problem due to that the facial muscle motion for a typical facial expression, which should be similar irrespective of the subject's identity, is difficult to quantify and generalize across population. Therefore, trained classifiers can easily over-fitted to person-specific facial appearances rather than to person-independent muscle motion from expressions. This problem becomes even more challenging when the rigid head motion and non-rigid facial muscle motion are observed in uncontrolled videos. To tackle these challenges, we model an facial expression video as a combination of two parts: 1) a set of low-rank components that represent person-independent expression prototypes, termed as Low-Rank Expression (LRE), and 2) a set of sparse appearance residuals that capture the muscle motion of individual frames in video, namely Sparse Expression Residual (SER). To avoid over-fitting, we explicitly model the person-independent transformation of individual frames with respect to a canonical reference space, in terms of an objective function to be minimized. We show that this objective function can be simplified and solved by an efficient sparse low-rank recovery algorithm. A comparative study between the state-of-the-art models and the proposed LRE representation shows the merits of our approach in representing expressions in a person-independent manner. We also demonstrate that the SER can also be utilized to further improve the recognition performance, when both spatial and temporal texture features are extracted out of SER. Extensive qualitative and quantitative results demonstrate the superiority of our approach as compared to most recent methods.
 
 \end{abstract}
 
@@ -155,7 +155,7 @@ Facial expression recognition, person-independent, low-rank expression, sparse e
 \begin{figure}[t]
 	\centering
 		\includegraphics[width=.95\columnwidth]{pics/splash.png}
-	\caption{The overview of our approach. We observe that: 1) a facial expression sequence possess an inherent \textit{global} model (\textit{e.g.}, lip corner expansion for \textit{Happiness} in this case); and 2) each frame has its own \textit{local} properties (\textit{e.g.}, various muscle motion intensities), which describe the facial dynamics. Due to the face anatomy constraints~\cite{Ekman78}, the muscle motion that characterize the local deformation is sparsely distributed. Inspired by these observations, we model each frame as 1) a Low-Rank Expression (LRE) that represents the global expression appearance estimated from the entire sequence; and 2) an additive Sparse Expression Residual (SER) that represents the deviations from the low-rank structure. Moreover, the person-independent factor is modeled as a transformation with respect to a canonical space (reference face), avoiding over-fitting for classification. Both LRE and SER provide viable manners to extract meaningful facial expression dynamics, yielding superior recognition performances. To appreciate the information captured by the LRE and SER representations, the bottom row shows the mean representation of the decomposed sequence. The mean LRE retains the global appearance and the mean SER captures the local motion around mouth and eye areas.}
+	\caption{The overview of our approach. We observe that: 1) a facial expression sequence possess an inherent \textit{global} model (\textit{e.g.}, lip corner expansion for \textit{Happiness} in this case); and 2) each frame has its own \textit{local} properties (\textit{e.g.}, various muscle motion intensities), which describe the facial dynamics. Due to the face anatomy constraints~\cite{Ekman78}, the muscle motion that characterize the local deformation is sparsely distributed. Inspired by these observations, we model each frame as: 1) a Low-Rank Expression (LRE) that represents the global expression appearance estimated from the entire sequence; and 2) an additive Sparse Expression Residual (SER) that represents the deviations from the low-rank structure. Moreover, the person-independent factor is modeled as a transformation with respect to a canonical space (reference face), avoiding over-fitting for classification. Both LRE and SER provide viable manners to extract meaningful facial expression dynamics, yielding superior recognition performances. To appreciate the information captured by the LRE and SER representations, the bottom row shows the mean representation of the decomposed sequence. The mean LRE retains the global appearance and the mean SER captures the local motion around mouth and eye regions.}
 	\label{fig:splash}
 \end{figure}
 
@@ -175,7 +175,7 @@ In this work, we depart from all the previous strategies and analyze the facial 
 
 Inspired by these observations, we model each frame as 1) a Low-Rank Expression (LRE) that represents the global expression appearance estimated from the entire sequence; and 2) an additive sparse expression residual (SER) that represents the deviations from the low-rank structure. As shown in Fig.~\ref{fig:splash}, both static and dynamic features are extracted from LRE and SER representations for expression recognition. In addition, we explicitly model the person-independent facial expression appearance transformation in a low-rank recovery framework. The person-independent factor is modeled as a non-linear transformation function, which can be approximated by matching a target face to a canonical reference face. Concretely, we approximate this non-linearity by the correspondence of two SIFT feature descriptors, namely SIFT-flow~\cite{Liu_PAMI11}. We then show that the person-independent transformation is independent of the low-rank recovery procedure, leading to an efficient algorithm in the pursuit of the sparse low-rank facial expression appearances. 
 
-In what follows, Section~\ref{sec:related} reviews the related work in the literature and highlights our contributions. Subsequently, Section~\ref{sec:decompose} details the modeling of expression images as LRE and SER representations, and contrast them with previous approaches in theory and practice.  Section~\ref{sec:exp} demonstrates the effectiveness of LRE+SER modeling via extensive experimental results. Finally, Section~\ref{sec:conclude} concludes this paper.
+In what follows, Section~\ref{sec:related} reviews the related work in the literature and highlights our contributions. Subsequently, Section~\ref{sec:decompose} details the modeling of expression images as LRE and SER representations, and contrast them with previous approaches in theory and practice. Section~\ref{sec:exp} demonstrates the effectiveness of LRE+SER modeling via extensive experimental results. Finally, Section~\ref{sec:conclude} concludes this paper.
 
 %In particular, in Section~\ref{sec:eai}, we discuss the relationship of LER with the Emotion Avatar Images (EAI)~\cite{Yang_SMCB12} in terms of both theory and results.
 
@@ -257,7 +257,7 @@ where $\p=(x,y)$ is the grid coordinates of the images, and $\w(\p)=(u(\p),v(\p)
 \begin{figure}[htbp]
 	\centering
 		\includegraphics[width=\columnwidth]{pics/sift_flow_visual.png}
-	\caption{Reference-based alignment via SIFT-flow~\cite{Liu_PAMI11} warping. The Avatar Reference is a canonical face representation~\cite{Yang_SMCB12}. After warping, the head rotation is corrected and person-specific information is attenuated in both sequence.}
+	\caption{Reference-based alignment via SIFT-flow warping~\cite{Liu_PAMI11}. The \textit{Avatar Reference} is a canonical face representation~\cite{Yang_SMCB12}. After warping, the head rotation is compensated and person-specific information is attenuated in both sequences.}
 	\label{fig:sift_flow_visual}
 \end{figure}
 
@@ -295,7 +295,7 @@ The aforementioned procedures are summarized in Algorithm~\ref{alg}. Parameters 
 
 \begin{algorithm}[htb]
     \caption{Low-Rank Expression Decomposition}
-    \textbf{Input:} Expression data matrix $D\in \mathbb{R}^{m\times n}$, SIFT-flow warping matrix $S\in \mathbb{R}^{m\times n}$\\
+    \textbf{Input:} Expression data matrix $\D\in \mathbb{R}^{m\times n}$, SIFT-flow warping matrix $\S\in \mathbb{R}^{m\times n}$\\
     \begin{algorithmic}[1]
 			\State{$\D^*=\D+\S$}
 			\State{$\A_0,\A_{-1}\leftarrow \0; \E_0,\E_{-1}\leftarrow \0; t_0,t_{-1}\leftarrow 1; \bar{\mu}\leftarrow \delta\mu_0$.}
@@ -344,7 +344,7 @@ In the training process, a Support Vector Machine (SVM)~\cite{libsvm} with linea
 \begin{figure}[!t]
 	\centering
 		\includegraphics[width=\columnwidth]{pics/low_rank_sparse}
-	\caption{The LRE and SER decomposition. A low-rank component and a sparse residual component are jointly estimated and decomposed from a sequence of aligned faces. Although individual frame differs from each other, the mean LRE visually resembles the EAI representation.}
+	\caption{The LRE and SER decomposition. A low-rank component and a sparse residual component are jointly estimated and decomposed from a sequence of aligned faces. Although individual frame differs from each other, the mean LRE visually resembles the EAI representation~\cite{Yang_SMCB12}.}
 	\label{fig:low_rank_sparse}
 \end{figure}
 
@@ -358,7 +358,7 @@ On the other hand, the low-rank component and sparse residual of individual fram
 \begin{figure}[htbp]
 	\centering
 		\includegraphics[width=\columnwidth]{pics/eai_lre_compare.png}
-	\caption{The comparison of Low-Rank Expressions (LRE) and Emotion Avatar Images (EAI). Although generated from different approaches, their appearances resemble each other at pixel level.}
+	\caption{The comparison of Low-Rank Expressions (LRE) and Emotion Avatar Images (EAI). Despite of being generated from different approaches, their appearances resemble each other at pixel level.}
 	\label{fig:eai_lre_compare}
 \end{figure}
 
@@ -370,7 +370,7 @@ As mentioned earlier, the expression appearance captured by the LRE reveals the 
         \subfigure[The Low-Rank Expression (LRE) representations]{\includegraphics[width=0.45\linewidth]{pics/lre_vs_id.png}\label{fig:lre_vs_id}}
         \subfigure[The Sparse Residual Expression (SRE) representations]{\includegraphics[width=0.45\linewidth]{pics/ser_vs_id.png}\label{fig:ser_vs_id}}
 }
-\caption{\label{fig:rep_vs_id} The sparse decomposition of facial expression sequence. Each grid is an image representation of a video sequence. (a) The LRE representations. (b) The corresponding SRE representations.}
+\caption{\label{fig:rep_vs_id} The sparse decomposition of a facial expression sequence. Each grid is an image representation of a video sequence. (a) The LRE representations. (b) The corresponding SRE representations.}
 \end{figure*}
 
 \section{Experimental Results\label{sec:exp}}
@@ -511,7 +511,7 @@ To thoroughly evaluate our approach, we carry out more experiments with analysis
 
 \begin{figure}[!h]
 	\centering
-		\includegraphics[width=.8\columnwidth]{pics/effect_training_size.png}
+		\includegraphics[width=.9\columnwidth]{pics/effect_training_size.png}
 	\caption{The person-independent recognition accuracy with various training size from a fixed subject pool. The feature in use is TOP-LPQ. The performance of LRE is spurred by the additional information captured in SER.}
 	\label{fig:effect_training_size}
 \end{figure}
@@ -526,7 +526,7 @@ As seen in Fig.~\ref{fig:effect_training_size}, the classification rate steadily
 
 \begin{figure}[htbp]
 	\centering
-		\includegraphics[width=.65\columnwidth]{pics/effect_people_num.png}
+		\includegraphics[width=.75\columnwidth]{pics/effect_people_num.png}
 	\caption{The boxplot of person-independent recognition accuracy using LRE+SER and TOP-LPQ with various number of people in the training set. The mean performance at the second quartile are connected to illustrate the trend. In general, the performance increases and becomes more stable when the number of training subjects grows.}
 	\label{fig:effect_people_num}
 \end{figure}
@@ -566,7 +566,7 @@ Besides, the CK+ data has only one or a few apex expression for each ``neutral-o
 \begin{figure}[htbp]
 	\centering
 		\includegraphics[width=.7\columnwidth]{pics/ck_eai.png}
-	\caption{Sample mean LRE representations for the CK+ dataset. The lower right grid shows the Avatar Reference generated from~\cite{Yang_SMCB12}. Although the person-specific information is attenuated as the appearance of different subjects visually resemble each other, the discriminative expression information is hidden and difficult to be distinguished. In general, they appear to be more ``neutral'' compared with the mean LRE representations of sequences in FERA-GEMEP dataset in Fig.~\ref{fig:lre_vs_id}.}
+	\caption{Sample mean LRE representations from the CK+ dataset. The lower right grid shows the Avatar Reference generated from~\cite{Yang_SMCB12}. Although the person-specific information is attenuated as the appearance of different subjects visually resemble each other, the discriminative expression information is hidden and difficult to be distinguished. In general, they appear to be more ``neutral'' compared with the mean LRE representations of the sequences in FERA-GEMEP dataset as shown in Fig.~\ref{fig:lre_vs_id}.}
 	\label{fig:ck_eai}
 \end{figure}
 
@@ -577,14 +577,14 @@ In addition, through a diagnostic experiment, we have found that the classificat
 \begin{figure}[htbp]
 	\centering
 		\includegraphics[width=.8\columnwidth]{pics/fig_ck_size.png}
-	\caption{Relation between the classification accuracy and the training size for each expression category. The accuracy is generally higher for categories with more training data.}
+	\caption{Relationship between the classification accuracy and the training size for each expression category. The accuracy is generally higher for categories with more training data.}
 	\label{fig:fig_ck_size}
 \end{figure}
 
 
 
 \section{Conclusions\label{sec:conclude}}
-We have proposed a low-rank sparse recovery framework to effectively extract dynamic muscle motion for unconstrained person-independent facial expression recognition in videos. Our approach decomposes a facial expression sequence into two representations, namely the Low-Rank Expression (LRE) and the Sparse Expression Residual (SER). The LRE recovers the underlying expression appearance shared in the entire expression sequence, while the SER captures the local muscle motion. The LRE and SER complement each other for a better expression recognition performance. Extensive experimental results have demonstrated the effectiveness of the proposed method and superior performance has been observed as compared to the state-of-the-art techniques. In addition, our approach has the potential of improvement given more training samples and larger training subject instances. 
+We have proposed a low-rank sparse recovery framework to effectively extract dynamic muscle motion for unconstrained person-independent facial expression recognition in videos. Our approach decomposes a facial expression sequence into two representations, namely the Low-Rank Expression (LRE) and the Sparse Expression Residual (SER). The LRE recovers the underlying expression appearance shared in the entire expression sequence, while the SER captures the local muscle motion. The LRE and SER complement each other for a better expression recognition performance. Extensive experimental results have demonstrated the effectiveness of the proposed method and superior performance has been observed as compared to the state-of-the-art techniques. In addition, our approach has the potential of improvement given more samples from a larger training population. 
 
 % Can use something like this to put references on a page
 % by themselves when using endfloat and the captionsoff option.
